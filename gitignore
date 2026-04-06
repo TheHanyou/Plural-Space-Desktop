@@ -44,3 +44,7 @@ builder-effective-config.yaml
 
 # TypeScript cache
 *.tsbuildinfo
+
+# Electron builder output files (root level)
+builder-debug.yml
+builder-effective-config.yaml
