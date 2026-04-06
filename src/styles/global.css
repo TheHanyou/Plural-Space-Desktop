@@ -1,0 +1,342 @@
+/* ─── Plural Space Desktop — Global Styles ─────────────────────────────── */
+
+/* Default to Obsidian palette — overridden by applyThemeToDOM at runtime */
+:root {
+  --bg: #0A1F2E;
+  --surface: #132A3B;
+  --card: #1A3347;
+  --border: #253F52;
+  --border-lt: #33506A;
+  --accent: #DAA520;
+  --accent-bg: #1A2A33;
+  --text: #C0C0C0;
+  --dim: #AEB8C0;
+  --muted: #8A9AAA;
+  --toggle-off: #253F52;
+  --danger: #d9534f;
+  --danger-bg: #1A2228;
+  --success: #4caf8a;
+  --success-bg: #142A28;
+  --info: #7B9FE8;
+  --info-bg: #142340;
+
+  --font-display: 'Georgia', 'Times New Roman', serif;
+  --font-body: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  --tile-min: 280px;
+  --tile-gap: 16px;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}
+
+/* ─── Scrollbar ────────────────────────────────────────────────────────── */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-lt);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--muted);
+}
+
+/* ─── Title Bar ────────────────────────────────────────────────────────── */
+
+.titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  padding: 0 16px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  -webkit-app-region: drag;
+  flex-shrink: 0;
+}
+
+.titlebar__title {
+  font-family: var(--font-display);
+  font-size: 14px;
+  color: var(--accent);
+  letter-spacing: 0.5px;
+}
+
+.titlebar__controls {
+  display: flex;
+  gap: 8px;
+  -webkit-app-region: no-drag;
+}
+
+.titlebar__btn {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.titlebar__btn:hover { opacity: 0.8; }
+.titlebar__btn--close { background: #d9534f; }
+.titlebar__btn--minimize { background: var(--accent); }
+.titlebar__btn--maximize { background: var(--success); }
+
+/* ─── App Shell ────────────────────────────────────────────────────────── */
+
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.dashboard {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--tile-gap);
+}
+
+/* ─── Tile Grid ────────────────────────────────────────────────────────── */
+
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--tile-min), 1fr));
+  gap: var(--tile-gap);
+  max-width: 1920px;
+  margin: 0 auto;
+}
+
+/* ─── Tile ─────────────────────────────────────────────────────────────── */
+
+.tile {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+  cursor: pointer;
+  transition: border-color 0.2s, transform 0.15s, box-shadow 0.2s;
+  display: flex;
+  flex-direction: column;
+  min-height: 180px;
+  position: relative;
+  overflow: hidden;
+}
+
+.tile:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.tile:active {
+  transform: translateY(0);
+}
+
+.tile__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.tile__glyph {
+  font-size: 22px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-bg);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;
+}
+
+.tile__title {
+  font-family: var(--font-display);
+  font-size: 15px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.tile__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tile__empty {
+  color: var(--muted);
+  font-size: 13px;
+  font-style: italic;
+}
+
+/* ─── Tile: Live Data Elements ─────────────────────────────────────────── */
+
+.tile__member-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0;
+}
+
+.tile__avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--bg);
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.tile__member-name {
+  font-size: 13px;
+  color: var(--text);
+}
+
+.tile__member-role {
+  font-size: 11px;
+  color: var(--muted);
+  margin-left: auto;
+}
+
+.tile__duration {
+  font-size: 11px;
+  color: var(--accent);
+  margin-left: auto;
+  font-variant-numeric: tabular-nums;
+}
+
+.tile__stat-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 3px 0;
+}
+
+.tile__stat-label {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.tile__stat-value {
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.tile__chat-msg {
+  font-size: 12px;
+  color: var(--dim);
+  line-height: 1.4;
+}
+
+.tile__chat-author {
+  font-size: 11px;
+  color: var(--accent);
+  margin-bottom: 2px;
+}
+
+.tile__journal-title {
+  font-size: 13px;
+  color: var(--text);
+  font-weight: 600;
+}
+
+.tile__journal-date {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.tile__tier-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--muted);
+  margin-top: 6px;
+  margin-bottom: 2px;
+}
+
+.tile__tier-label:first-child {
+  margin-top: 0;
+}
+
+/* ─── Full View (click-through from tile) ──────────────────────────────── */
+
+.full-view {
+  position: fixed;
+  inset: 40px 0 0 0; /* below titlebar */
+  background: var(--bg);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  animation: slideUp 0.2s ease-out;
+}
+
+@keyframes slideUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.full-view__header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.full-view__back {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 14px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13px;
+  transition: border-color 0.15s;
+}
+.full-view__back:hover {
+  border-color: var(--accent);
+}
+
+.full-view__title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  color: var(--accent);
+}
+
+.full-view__content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}

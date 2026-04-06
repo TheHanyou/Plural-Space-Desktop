@@ -1,0 +1,46 @@
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+
+import en from './en.json';
+import es from './es.json';
+import fr from './fr.json';
+import de from './de.json';
+import pt from './pt.json';
+import fi from './fi.json';
+import nb from './nb.json';
+
+export const SUPPORTED_LANGUAGES = ['en', 'es', 'fr', 'de', 'pt', 'fi', 'nb'] as const;
+export type SupportedLanguage = typeof SUPPORTED_LANGUAGES[number];
+
+const getDeviceLanguage = (): SupportedLanguage => {
+  const code = navigator.language?.split('-')[0] || 'en';
+  if (SUPPORTED_LANGUAGES.includes(code as SupportedLanguage)) {
+    return code as SupportedLanguage;
+  }
+  if (code === 'no' || code === 'nn') return 'nb';
+  return 'en';
+};
+
+i18n
+  .use(initReactI18next)
+  .init({
+    resources: {
+      en: { translation: en },
+      es: { translation: es },
+      fr: { translation: fr },
+      de: { translation: de },
+      pt: { translation: pt },
+      fi: { translation: fi },
+      nb: { translation: nb },
+    },
+    lng: getDeviceLanguage(),
+    fallbackLng: 'en',
+    interpolation: { escapeValue: false },
+    compatibilityJSON: 'v4',
+  });
+
+export const changeLanguage = (lang: SupportedLanguage) => {
+  i18n.changeLanguage(lang);
+};
+
+export default i18n;
