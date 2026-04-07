@@ -146,3 +146,8 @@ export function applyThemeToDOM(theme: ThemeColors): void {
   root.style.setProperty('--info', theme.info);
   root.style.setProperty('--info-bg', theme.infoBg);
 }
+
+export function applyTextScale(scale: number): void {
+  // Electron is Chromium — CSS zoom works perfectly and scales everything uniformly
+  (document.body.style as any).zoom = String(scale);
+}

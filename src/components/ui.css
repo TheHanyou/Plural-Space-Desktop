@@ -12,6 +12,7 @@
 }
 .btn:hover { opacity: 0.85; }
 .btn--disabled { opacity: 0.4; pointer-events: none; }
+.btn--full { width: 100%; }
 .btn--primary { background: var(--accent-bg); color: var(--accent); border-color: rgba(218,165,32,0.25); }
 .btn--ghost { background: transparent; color: var(--dim); border-color: var(--border); }
 .btn--danger { background: var(--danger-bg); color: var(--danger); border-color: rgba(217,83,79,0.25); }

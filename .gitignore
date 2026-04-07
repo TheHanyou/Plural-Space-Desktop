@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+dist/
+dist-electron/
+release/
+
+# Stray binaries
+cmd.exe
+*.exe
+npm
+npx
+
+# Electron builder cache
+.cache/
+
+# Vite
+*.local
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Electron builder artifacts
+builder-debug.yml
+builder-effective-config.yaml
+
+# TypeScript cache
+*.tsbuildinfo
+
+# Electron builder output files (root level)
+builder-debug.yml
+builder-effective-config.yaml

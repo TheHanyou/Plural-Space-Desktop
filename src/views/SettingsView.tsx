@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Field, Toggle, Dropdown, Section, ChipList, AddRow, Btn } from '../components/ui';
 import { SystemInfo, AppSettings, TextScale, TEXT_SCALE_OPTIONS, isValidHex, normalizeHex } from '../utils';
-import { CustomPalette, BUILTIN_PALETTES, deriveTheme, applyThemeToDOM, PALETTE } from '../theme';
+import { CustomPalette, BUILTIN_PALETTES, deriveTheme, applyThemeToDOM, applyTextScale, PALETTE } from '../theme';
 import { store, KEYS } from '../storage';
 import { SUPPORTED_LANGUAGES, changeLanguage } from '../i18n/i18n';
 import type { SupportedLanguage } from '../i18n/i18n';
@@ -21,6 +21,7 @@ const LANG_NAMES: Record<string, string> = {
 
 export default function SettingsView({ system, settings, palettes, onUpdate }: Props) {
   const { t } = useTranslation();
+  const [saveStatus, setSaveStatus] = useState<string | null>(null);
 
   const [name, setName] = useState(system.name);
   const [desc, setDesc] = useState(system.description);
@@ -76,7 +77,11 @@ export default function SettingsView({ system, settings, palettes, onUpdate }: P
   };
 
   const savePaletteEdit = async () => {
-    if (!editPalette || !palName.trim()) return;
+    if (!editPalette || !palName.trim()) {
+      setSaveStatus('Palette name is required');
+      setTimeout(() => setSaveStatus(null), 3000);
+      return;
+    }
     const updated: CustomPalette = {
       id: editPalette.id, name: palName.trim(),
       bg: isValidHex(normalizeHex(palBg)) ? normalizeHex(palBg) : editPalette.bg,
@@ -86,9 +91,17 @@ export default function SettingsView({ system, settings, palettes, onUpdate }: P
     };
     const existing = userPalettes.find(p => p.id === updated.id);
     const newList = existing ? userPalettes.map(p => p.id === updated.id ? updated : p) : [...userPalettes, updated];
-    await store.set(KEYS.palettes, newList);
-    setEditPalette(null);
-    onUpdate();
+    try {
+      await store.set(KEYS.palettes, newList);
+      setEditPalette(null);
+      setSaveStatus('Palette saved');
+      setTimeout(() => setSaveStatus(null), 3000);
+      onUpdate();
+    } catch (e: any) {
+      console.error('Palette save error:', e);
+      setSaveStatus('Error saving palette');
+      setTimeout(() => setSaveStatus(null), 4000);
+    }
   };
 
   const deletePalette = async (id: string) => {
@@ -99,16 +112,25 @@ export default function SettingsView({ system, settings, palettes, onUpdate }: P
   };
 
   const save = async () => {
-    await store.set(KEYS.system, {
-      name: name.trim(), description: desc.trim(),
-      journalPassword: showPw && journalPw ? journalPw : undefined,
-    });
-    await store.set(KEYS.settings, {
-      ...settings, locations: locs, customMoods: moods, language: lang,
-      notificationsEnabled: notif, textScale, activePaletteId,
-    });
-    changeLanguage(lang);
-    onUpdate();
+    try {
+      await store.set(KEYS.system, {
+        name: name.trim(), description: desc.trim(),
+        journalPassword: showPw && journalPw ? journalPw : undefined,
+      });
+      await store.set(KEYS.settings, {
+        ...settings, locations: locs, customMoods: moods, language: lang,
+        notificationsEnabled: notif, textScale, activePaletteId,
+      });
+      changeLanguage(lang);
+      applyTextScale(textScale);
+      onUpdate();
+      setSaveStatus('Settings saved');
+      setTimeout(() => setSaveStatus(null), 3000);
+    } catch (e: any) {
+      console.error('Settings save error:', e);
+      setSaveStatus('Error saving settings');
+      setTimeout(() => setSaveStatus(null), 4000);
+    }
   };
 
   const HexField = ({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) => {
@@ -248,6 +270,16 @@ export default function SettingsView({ system, settings, palettes, onUpdate }: P
 
       {/* Save */}
       <div style={{ position: 'sticky', bottom: 0, padding: '12px 0', background: 'var(--bg)', borderTop: '1px solid var(--border)' }}>
+        {saveStatus && (
+          <div style={{
+            padding: '8px 14px', marginBottom: 8, borderRadius: 8, fontSize: 13, textAlign: 'center',
+            background: saveStatus.startsWith('Error') || saveStatus.startsWith('Palette name') ? 'var(--danger-bg)' : 'var(--success-bg)',
+            color: saveStatus.startsWith('Error') || saveStatus.startsWith('Palette name') ? 'var(--danger)' : 'var(--success)',
+            border: `1px solid ${saveStatus.startsWith('Error') || saveStatus.startsWith('Palette name') ? 'var(--danger)' : 'var(--success)'}`,
+          }}>
+            {saveStatus}
+          </div>
+        )}
         <Btn variant="solid" onClick={save} className="btn--full">Save Settings</Btn>
       </div>
     </div>

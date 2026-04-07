@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useTranslation } from 'react-i18next';
 import { store, KEYS } from './storage';
-import { deriveTheme, applyThemeToDOM, DARK_PALETTE, BUILTIN_PALETTES, CustomPalette, ThemeColors } from './theme';
+import { deriveTheme, applyThemeToDOM, applyTextScale, DARK_PALETTE, BUILTIN_PALETTES, CustomPalette, ThemeColors } from './theme';
 import {
   Member, FrontState, HistoryEntry, JournalEntry, ChatChannel, ChatMessage,
   AppSettings, SystemInfo, MemberGroup, migrateFrontState, isFrontEmpty,
   fmtDur, getInitials, DEFAULT_CHANNELS,
 } from './utils';
+import { changeLanguage } from './i18n/i18n';
 
 import FrontTile from './tiles/FrontTile';
 import MembersTile from './tiles/MembersTile';
@@ -97,6 +98,8 @@ export default function App() {
     const activePalette = allPalettes.find(p => p.id === mergedSettings.activePaletteId) || DARK_PALETTE;
     const theme = deriveTheme(activePalette.bg, activePalette.accent, activePalette.text, activePalette.mid);
     applyThemeToDOM(theme);
+    applyTextScale(mergedSettings.textScale);
+    changeLanguage(mergedSettings.language);
 
     setState({
       system: system || { name: '', description: '' },

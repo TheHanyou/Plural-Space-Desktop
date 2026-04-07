@@ -1,8 +1,16 @@
 import { app, BrowserWindow, ipcMain, dialog, Notification, Tray, Menu, nativeImage } from 'electron';
 import * as path from 'path';
+import * as fs from 'fs';
 import Store from 'electron-store';
 
-const store = new Store({ name: 'plural-space-data' });
+app.setName('Plural Space');
+
+const userDataPath = app.getPath('userData');
+if (!fs.existsSync(userDataPath)) {
+  fs.mkdirSync(userDataPath, { recursive: true });
+}
+
+const store = new Store({ name: 'plural-space-data', cwd: userDataPath });
 let mainWindow: BrowserWindow | null = null;
 let tray: Tray | null = null;
 
@@ -40,26 +48,65 @@ function createWindow(): void {
 // ─── IPC: Storage ───────────────────────────────────────────────────────────
 
 ipcMain.handle('store:get', (_e, key: string) => {
-  return store.get(key, null);
+  try {
+    return store.get(key, null);
+  } catch (e) {
+    console.error('[store:get] error:', e);
+    return null;
+  }
 });
 
 ipcMain.handle('store:set', (_e, key: string, value: unknown) => {
-  store.set(key, value);
+  try {
+    store.set(key, value);
+  } catch (e: any) {
+    if (e?.code === 'EXDEV') {
+      try {
+        const filePath = (store as any).path;
+        const current = fs.existsSync(filePath)
+          ? JSON.parse(fs.readFileSync(filePath, 'utf8'))
+          : {};
+        current[key] = value;
+        fs.writeFileSync(filePath, JSON.stringify(current, null, '\t'));
+      } catch (fallbackErr) {
+        console.error('[store:set] fallback write failed:', fallbackErr);
+        throw fallbackErr;
+      }
+    } else {
+      console.error('[store:set] error:', e);
+      throw e;
+    }
+  }
 });
 
 ipcMain.handle('store:remove', (_e, key: string) => {
-  store.delete(key);
+  try {
+    store.delete(key);
+  } catch (e) {
+    console.error('[store:remove] error:', e);
+    throw e;
+  }
 });
 
 ipcMain.handle('store:clearAll', () => {
-  const all = store.store;
-  for (const key of Object.keys(all)) {
-    if (key.startsWith('ps:')) store.delete(key);
+  try {
+    const all = store.store;
+    for (const key of Object.keys(all)) {
+      if (key.startsWith('ps:')) store.delete(key);
+    }
+  } catch (e) {
+    console.error('[store:clearAll] error:', e);
+    throw e;
   }
 });
 
 ipcMain.handle('store:allKeys', () => {
-  return Object.keys(store.store);
+  try {
+    return Object.keys(store.store);
+  } catch (e) {
+    console.error('[store:allKeys] error:', e);
+    return [];
+  }
 });
 
 // ─── IPC: File Dialogs ──────────────────────────────────────────────────────
@@ -104,7 +151,6 @@ ipcMain.on('window:close', () => mainWindow?.close());
 // ─── System Tray ─────────────────────────────────────────────────────────────
 
 function createTray(): void {
-  // Placeholder — will use actual icon asset
   const icon = nativeImage.createEmpty();
   tray = new Tray(icon);
   tray.setToolTip('Plural Space');
