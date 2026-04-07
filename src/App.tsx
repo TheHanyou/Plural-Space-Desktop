@@ -196,10 +196,18 @@ export default function App() {
         <div className="full-view">
           <div className="full-view__header">
             <button className="full-view__back" onClick={() => setView('dashboard')}>
-              ← {t('Dashboard') || 'Dashboard'}
+              ← Dashboard
             </button>
             <span className="full-view__title">
-              {view.charAt(0).toUpperCase() + view.slice(1).replace('-', ' / ')}
+              {view === 'front' ? t('tabs.front')
+                : view === 'members' ? t('members.title')
+                : view === 'history' ? t('history.title')
+                : view === 'journal' ? t('journal.title')
+                : view === 'chat' ? t('hub.systemChat')
+                : view === 'stats' ? t('hub.statistics')
+                : view === 'import-export' ? t('hub.importExport')
+                : view === 'settings' ? t('modal.systemSettings')
+                : view}
             </span>
           </div>
           <div className="full-view__content">

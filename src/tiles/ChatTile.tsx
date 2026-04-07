@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Member, ChatChannel, ChatMessage } from '../utils';
 import { store, chatMsgKey } from '../storage';
 
-interface Props {
-  channels: ChatChannel[];
-  members: Member[];
-  onClick: () => void;
-}
+interface Props { channels: ChatChannel[]; members: Member[]; onClick: () => void; }
 
 export default function ChatTile({ channels, members, onClick }: Props) {
+  const { t } = useTranslation();
   const [lastMsg, setLastMsg] = useState<{ msg: ChatMessage; channel: string } | null>(null);
-
   const getMember = (id: string) => members.find(m => m.id === id);
-
   useEffect(() => {
     (async () => {
       let latest: { msg: ChatMessage; channel: string } | null = null;
@@ -20,40 +16,23 @@ export default function ChatTile({ channels, members, onClick }: Props) {
         const msgs = await store.get<ChatMessage[]>(chatMsgKey(ch.id), []);
         if (msgs && msgs.length > 0) {
           const last = msgs[msgs.length - 1];
-          if (!latest || last.timestamp > latest.msg.timestamp) {
-            latest = { msg: last, channel: ch.name };
-          }
+          if (!latest || last.timestamp > latest.msg.timestamp) latest = { msg: last, channel: ch.name };
         }
       }
       setLastMsg(latest);
     })();
   }, [channels]);
-
+  const activeCount = channels.filter(c => !c.archived).length;
   return (
     <div className="tile" onClick={onClick}>
-      <div className="tile__header">
-        <div className="tile__glyph">⌨</div>
-        <span className="tile__title">System Chat</span>
-      </div>
+      <div className="tile__header"><div className="tile__glyph">⌨</div><span className="tile__title">{t('hub.systemChat')}</span></div>
       <div className="tile__body">
-        {!lastMsg ? (
-          <span className="tile__empty">No messages yet</span>
-        ) : (
-          <>
-            <span style={{ fontSize: 11, color: 'var(--muted)' }}>#{lastMsg.channel}</span>
-            <div className="tile__chat-author">
-              {getMember(lastMsg.msg.authorId)?.name || 'Unknown'}
-            </div>
-            <div className="tile__chat-msg">
-              {lastMsg.msg.content.length > 120
-                ? lastMsg.msg.content.slice(0, 120) + '...'
-                : lastMsg.msg.content}
-            </div>
-          </>
-        )}
-        <div style={{ marginTop: 'auto', paddingTop: 8, fontSize: 11, color: 'var(--muted)' }}>
-          {channels.filter(c => !c.archived).length} active channel{channels.filter(c => !c.archived).length !== 1 ? 's' : ''}
-        </div>
+        {!lastMsg ? <span className="tile__empty">{t('chat.noMessages')}</span> : (<>
+          <span style={{ fontSize: 11, color: 'var(--muted)' }}>#{lastMsg.channel}</span>
+          <div className="tile__chat-author">{getMember(lastMsg.msg.authorId)?.name || t('common.unknown')}</div>
+          <div className="tile__chat-msg">{lastMsg.msg.content.length > 120 ? lastMsg.msg.content.slice(0, 120) + '...' : lastMsg.msg.content}</div>
+        </>)}
+        <div style={{ marginTop: 'auto', paddingTop: 8, fontSize: 11, color: 'var(--muted)' }}>{activeCount} {t('chat.channels')}</div>
       </div>
     </div>
   );

@@ -151,12 +151,12 @@ export default function SettingsView({ system, settings, palettes, onUpdate }: P
   return (
     <div style={{ maxWidth: 640, margin: '0 auto' }}>
       {/* System Info */}
-      <Section label="System Info" />
-      <Field label="System Name" value={name} onChange={setName} placeholder="System name" />
-      <Field label="Description" value={desc} onChange={setDesc} placeholder="A brief description" multiline />
+      <Section label={t('modal.systemName')} />
+      <Field label={t('modal.systemName')} value={name} onChange={setName} placeholder={t('modal.systemNamePlaceholder')} />
+      <Field label={t('modal.descriptionLabel')} value={desc} onChange={setDesc} placeholder={t('modal.descriptionFieldPlaceholder')} multiline />
 
       {/* Palette */}
-      <Section label="Theme Palette" />
+      <Section label={t('modal.palette')} />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
         {allPalettes.map(p => {
           const isActive = activePaletteId === p.id;
@@ -176,10 +176,10 @@ export default function SettingsView({ system, settings, palettes, onUpdate }: P
               <span style={{ flex: 1, fontSize: 13, color: isActive ? 'var(--accent)' : 'var(--text)', fontWeight: isActive ? 600 : 400 }}>
                 {p.name}
               </span>
-              {isActive && <span style={{ fontSize: 11, color: 'var(--accent)' }}>Active</span>}
+              {isActive && <span style={{ fontSize: 11, color: 'var(--accent)' }}>✓</span>}
               {!isBuiltin && (
                 <div style={{ display: 'flex', gap: 6 }}>
-                  <button className="btn btn--ghost" style={{ padding: '3px 8px', fontSize: 11 }} onClick={e => { e.stopPropagation(); startEditPalette(p); }}>Edit</button>
+                  <button className="btn btn--ghost" style={{ padding: '3px 8px', fontSize: 11 }} onClick={e => { e.stopPropagation(); startEditPalette(p); }}>✎</button>
                   <button className="btn btn--danger" style={{ padding: '3px 8px', fontSize: 11 }} onClick={e => { e.stopPropagation(); deletePalette(p.id); }}>✕</button>
                 </div>
               )}
@@ -190,81 +190,80 @@ export default function SettingsView({ system, settings, palettes, onUpdate }: P
 
       {editPalette ? (
         <div style={{ padding: 14, background: 'var(--surface)', borderRadius: 8, border: '1px solid var(--border)', marginBottom: 14 }}>
-          <Field label="Palette Name" value={palName} onChange={setPalName} placeholder="My Theme" />
+          <Field label={t('modal.paletteName')} value={palName} onChange={setPalName} placeholder="My Theme" />
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
-            <HexField label="Background" value={palBg} onChange={setPalBg} />
-            <HexField label="Accent" value={palAccent} onChange={setPalAccent} />
-            <HexField label="Text" value={palText} onChange={setPalText} />
-            <HexField label="Mid" value={palMid} onChange={setPalMid} />
+            <HexField label={t('modal.palBg')} value={palBg} onChange={setPalBg} />
+            <HexField label={t('modal.palAccent')} value={palAccent} onChange={setPalAccent} />
+            <HexField label={t('modal.palText')} value={palText} onChange={setPalText} />
+            <HexField label={t('modal.palMid')} value={palMid} onChange={setPalMid} />
           </div>
-          {/* Live preview */}
           {isValidHex(normalizeHex(palBg)) && isValidHex(normalizeHex(palAccent)) && (
             <div style={{ marginTop: 10, padding: 12, borderRadius: 8, background: normalizeHex(palBg), border: '1px solid var(--border)' }}>
-              <span style={{ fontSize: 13, color: normalizeHex(palAccent), fontWeight: 600 }}>Preview: </span>
-              <span style={{ fontSize: 13, color: normalizeHex(palText) }}>Sample text on this palette</span>
+              <span style={{ fontSize: 13, color: normalizeHex(palAccent), fontWeight: 600 }}>{t('modal.palPreviewAccent')} </span>
+              <span style={{ fontSize: 13, color: normalizeHex(palText) }}>{t('modal.palPreviewText')}</span>
             </div>
           )}
           <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
-            <Btn variant="ghost" onClick={() => setEditPalette(null)}>Cancel</Btn>
-            <Btn onClick={savePaletteEdit}>Save Palette</Btn>
+            <Btn variant="ghost" onClick={() => setEditPalette(null)}>{t('common.cancel')}</Btn>
+            <Btn onClick={savePaletteEdit}>{t('common.save')}</Btn>
           </div>
         </div>
       ) : (
         userPalettes.length < 10 && (
-          <Btn variant="ghost" onClick={startNewPalette}>+ New Palette</Btn>
+          <Btn variant="ghost" onClick={startNewPalette}>+ {t('modal.newPalette')}</Btn>
         )
       )}
-      <p style={{ fontSize: 10, color: 'var(--muted)', marginTop: 6 }}>{userPalettes.length}/10 custom slots used</p>
+      <p style={{ fontSize: 10, color: 'var(--muted)', marginTop: 6 }}>{t('modal.paletteSlots', { used: userPalettes.length, max: 10 })}</p>
 
       {/* Journal Password */}
-      <Section label="Journal Password" />
+      <Section label={t('modal.globalJournalPassword')} />
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
-        <span style={{ fontSize: 12, color: 'var(--dim)' }}>Protect journal with a password</span>
+        <span style={{ fontSize: 12, color: 'var(--dim)' }}>{t('modal.lockJournal')}</span>
         <Btn variant={showPw ? 'danger' : 'primary'} onClick={() => { setShowPw(!showPw); if (showPw) setJournalPw(''); }}>
-          {showPw ? 'Remove' : 'Add'}
+          {showPw ? t('common.remove') : t('common.add')}
         </Btn>
       </div>
-      {showPw && <Field value={journalPw} onChange={setJournalPw} placeholder="Enter password" type="password" />}
+      {showPw && <Field value={journalPw} onChange={setJournalPw} placeholder={t('modal.lockJournal')} type="password" />}
 
       {/* Toggles */}
-      <Toggle label="Notifications" description="Show front change reminders" value={notif} onChange={setNotif} />
+      <Toggle label={t('modal.notifications')} description={t('modal.notificationsDesc')} value={notif} onChange={setNotif} />
 
       {/* Language */}
-      <Section label="Language" />
+      <Section label={t('modal.language')} />
       <Dropdown
         value={lang}
         options={[...SUPPORTED_LANGUAGES]}
         onChange={setLang}
-        renderOption={v => LANG_NAMES[v] || v}
+        renderOption={v => t(`language.${v}`)}
       />
 
       {/* Text Scale */}
-      <Section label="Text Scale" />
+      <Section label={t('modal.textSize')} />
       <div style={{ display: 'flex', gap: 8, marginBottom: 14 }}>
         {TEXT_SCALE_OPTIONS.map(opt => (
           <button key={opt.value}
             className={`btn ${textScale === opt.value ? 'btn--primary' : 'btn--ghost'}`}
             style={{ flex: 1 }}
             onClick={() => setTextScale(opt.value)}>
-            {opt.label}
+            {t(`modal.textScale${opt.label.replace(/\s/g, '')}`)}
           </button>
         ))}
       </div>
 
       {/* Locations */}
-      <Section label="Locations" />
+      <Section label={t('modal.locations')} />
       <ChipList items={locs} onRemove={l => setLocs(locs.filter(x => x !== l))} color="var(--accent)" />
-      <AddRow value={newLoc} onChange={setNewLoc} onAdd={addLoc} placeholder="Add a location..." />
+      <AddRow value={newLoc} onChange={setNewLoc} onAdd={addLoc} placeholder={t('modal.addLocationPlaceholder')} />
 
       {/* Custom Moods */}
-      <Section label="Custom Moods" />
+      <Section label={t('modal.customMoods')} />
       <ChipList items={moods} onRemove={m => setMoods(moods.filter(x => x !== m))} color="var(--info)" />
-      <AddRow value={newMood} onChange={setNewMood} onAdd={addMood} placeholder="Add a mood..." />
+      <AddRow value={newMood} onChange={setNewMood} onAdd={addMood} placeholder={t('modal.addMoodPlaceholder')} />
 
       {/* Support */}
       <div style={{ textAlign: 'center', padding: '24px 0', borderTop: '1px solid var(--border)', marginTop: 20 }}>
         <Btn variant="solid" onClick={() => window.open('https://www.buymeacoffee.com/PluralSpace', '_blank')}>
-          ☕ Support Plural Space
+          ☕ {t('modal.supportPS')}
         </Btn>
       </div>
 
@@ -280,7 +279,7 @@ export default function SettingsView({ system, settings, palettes, onUpdate }: P
             {saveStatus}
           </div>
         )}
-        <Btn variant="solid" onClick={save} className="btn--full">Save Settings</Btn>
+        <Btn variant="solid" onClick={save} className="btn--full">{t('common.save')}</Btn>
       </div>
     </div>
   );
