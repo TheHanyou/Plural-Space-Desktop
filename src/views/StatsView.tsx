@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Member, HistoryEntry, ChatMessage, fmtDur, getInitials } from '../utils';
 import { Section } from '../components/ui';
 import { store, chatMsgKey, KEYS } from '../storage';
@@ -13,6 +14,7 @@ interface Props {
 type TimeRange = 'all' | '7d' | '30d';
 
 export default function StatsView({ history, members, channels }: Props) {
+  const { t } = useTranslation();
   const [range, setRange] = useState<TimeRange>('all');
   const [chatCounts, setChatCounts] = useState<Record<string, number>>({});
 

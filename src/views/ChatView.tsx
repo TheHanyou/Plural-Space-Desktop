@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Member, ChatChannel, ChatMessage, DEFAULT_CHANNELS,
   uid, getInitials, fmtTime,
@@ -15,6 +16,7 @@ interface Props {
 const EMOJI_QUICK = ['👍', '❤️', '😂', '😢', '😮', '🎉', '✨', '🔥'];
 
 export default function ChatView({ members, channels, onUpdate }: Props) {
+  const { t } = useTranslation();
   const [activeChannelId, setActiveChannelId] = useState<string | null>(channels.find(c => !c.archived)?.id || null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState('');

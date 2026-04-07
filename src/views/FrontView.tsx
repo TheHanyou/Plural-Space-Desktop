@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   Member, MemberGroup, FrontState, FrontTier, FrontTierKey, HistoryEntry,
   AppSettings, TIER_LABELS, DEFAULT_MOODS, EMPTY_TIER,
@@ -255,6 +256,7 @@ function SetFrontModal({ open, onClose, onSave, members, groups, current, settin
   members: Member[]; groups: MemberGroup[]; current: FrontState | null;
   settings: AppSettings; allMoods: string[];
 }) {
+  const { t } = useTranslation();
   const [primaryIds, setPrimaryIds] = useState<Set<string>>(new Set());
   const [coFrontIds, setCoFrontIds] = useState<Set<string>>(new Set());
   const [coConsciousIds, setCoConsciousIds] = useState<Set<string>>(new Set());
