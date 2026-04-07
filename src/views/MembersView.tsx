@@ -78,12 +78,14 @@ export default function MembersView({ members, groups, onUpdate }: Props) {
   };
 
   const pickAvatar = async () => {
-    const path = await window.electronAPI.dialog.openFile([
+    const filePath = await window.electronAPI.dialog.openFile([
       { name: 'Images', extensions: ['png', 'jpg', 'jpeg', 'gif', 'webp'] },
     ]);
-    if (!path) return;
-    // Read file as base64 via main process — for now, use a File input workaround
-    // This will be wired properly when we add IPC file reading
+    if (!filePath) return;
+    const dataUrl = await window.electronAPI.file.readAsBase64(filePath);
+    if (dataUrl) {
+      set('avatar', dataUrl);
+    }
   };
 
   return (
@@ -91,11 +93,11 @@ export default function MembersView({ members, groups, onUpdate }: Props) {
       {/* Toolbar */}
       <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 16 }}>
         <input className="field__input" value={search} onChange={e => setSearch(e.target.value)}
-          placeholder="Search members..." style={{ flex: 1 }} />
+          placeholder={t('members.search')} style={{ flex: 1 }} />
         <Btn variant={showArchived ? 'info' : 'ghost'} onClick={() => setShowArchived(!showArchived)}>
-          {showArchived ? `Archived (${archived.length})` : `Active (${active.length})`}
+          {showArchived ? `${t('members.archived')} (${archived.length})` : `${t('members.active')} (${active.length})`}
         </Btn>
-        <Btn variant="solid" onClick={openNew}>+ Add Member</Btn>
+        <Btn variant="solid" onClick={openNew}>{t('members.add')}</Btn>
       </div>
 
       {/* Member Grid */}
@@ -138,55 +140,61 @@ export default function MembersView({ members, groups, onUpdate }: Props) {
 
       {filtered.length === 0 && (
         <div style={{ textAlign: 'center', padding: 40, color: 'var(--muted)', fontSize: 13 }}>
-          {search ? 'No members match your search' : showArchived ? 'No archived members' : 'No members yet — add your first!'}
+          {search ? t('members.noMembers') : showArchived ? t('members.noArchived') : t('members.noMembers')}
         </div>
       )}
 
       {/* Edit Modal */}
-      <Modal open={!!editing} title={isNew ? 'Add Member' : 'Edit Member'} onClose={() => setEditing(null)}
+      <Modal open={!!editing} title={isNew ? t('modal.addMember') : t('modal.editMember')} onClose={() => setEditing(null)}
         footer={
           <div style={{ display: 'flex', gap: 8, width: '100%', justifyContent: 'space-between' }}>
             <div>
               {!isNew && (
-                <Btn variant="danger" onClick={() => setConfirmDelete(f.id)}>Delete</Btn>
+                <Btn variant="danger" onClick={() => setConfirmDelete(f.id)}>{t('common.delete')}</Btn>
               )}
             </div>
             <div style={{ display: 'flex', gap: 8 }}>
-              <Btn variant="ghost" onClick={() => setEditing(null)}>Cancel</Btn>
-              <Btn variant="solid" onClick={saveMember}>Save</Btn>
+              <Btn variant="ghost" onClick={() => setEditing(null)}>{t('common.cancel')}</Btn>
+              <Btn variant="solid" onClick={saveMember}>{t('common.save')}</Btn>
             </div>
           </div>
         }>
         {/* Avatar */}
         <div style={{ textAlign: 'center', marginBottom: 16 }}>
           <div className="tile__avatar" style={{
-            width: 72, height: 72, borderRadius: 36, fontSize: 24, margin: '0 auto',
+            width: 72, height: 72, borderRadius: 36, fontSize: 24, margin: '0 auto', cursor: 'pointer',
             border: `2px solid ${f.color}`,
             ...(f.avatar
               ? { backgroundImage: `url(${f.avatar})` }
               : { backgroundColor: f.color }),
-          }}>
+          }} onClick={pickAvatar}>
             {!f.avatar && getInitials(f.name || '?')}
           </div>
-          {f.avatar && (
-            <button style={{ fontSize: 11, color: 'var(--danger)', background: 'none', border: 'none', cursor: 'pointer', marginTop: 6 }}
-              onClick={() => set('avatar', undefined)}>
-              Remove Photo
+          <div style={{ marginTop: 6, display: 'flex', justifyContent: 'center', gap: 8 }}>
+            <button style={{ fontSize: 11, color: 'var(--accent)', background: 'none', border: 'none', cursor: 'pointer' }}
+              onClick={pickAvatar}>
+              📷
             </button>
-          )}
+            {f.avatar && (
+              <button style={{ fontSize: 11, color: 'var(--danger)', background: 'none', border: 'none', cursor: 'pointer' }}
+                onClick={() => set('avatar', undefined)}>
+                {t('modal.removePfp')}
+              </button>
+            )}
+          </div>
         </div>
 
-        <Field label="Name" value={f.name} onChange={v => set('name', v)} placeholder="Headmate name" />
-        <Field label="Pronouns" value={f.pronouns} onChange={v => set('pronouns', v)} placeholder="e.g. they/them" />
-        <Field label="Role" value={f.role} onChange={v => set('role', v)} placeholder="e.g. Protector, Host" />
+        <Field label={t('modal.name')} value={f.name} onChange={v => set('name', v)} placeholder={t('modal.headmateName')} />
+        <Field label={t('modal.pronouns')} value={f.pronouns} onChange={v => set('pronouns', v)} placeholder={t('modal.pronounsPlaceholder')} />
+        <Field label={t('modal.role')} value={f.role} onChange={v => set('role', v)} placeholder={t('modal.rolePlaceholder')} />
 
-        <Section label="Color" />
+        <Section label={t('modal.color')} />
         <ColorPicker value={f.color} onChange={v => set('color', v)} palette={PALETTE} />
 
         {/* Groups */}
         {groups.length > 0 && (
           <>
-            <Section label="Groups" />
+            <Section label={t('memberGroups.title')} />
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, marginBottom: 14 }}>
               {groups.map(g => {
                 const active = (f.groupIds || []).includes(g.id);
@@ -209,25 +217,25 @@ export default function MembersView({ members, groups, onUpdate }: Props) {
         )}
 
         {/* Tags */}
-        <Section label="Tags" />
+        <Section label={t('modal.memberTags')} />
         <ChipList items={f.tags || []} onRemove={tag => setF(x => ({ ...x, tags: (x.tags || []).filter(t => t !== tag) }))} />
-        <AddRow value={tagInput} onChange={setTagInput} onAdd={addTag} placeholder="#tag" />
+        <AddRow value={tagInput} onChange={setTagInput} onAdd={addTag} placeholder={t('modal.memberTagPlaceholder')} />
 
         {/* Description */}
-        <Section label="Description / Bio" />
-        <Field value={f.description} onChange={v => set('description', v)} placeholder="Member description..." multiline />
+        <Section label={t('modal.descriptionBio')} />
+        <Field value={f.description} onChange={v => set('description', v)} placeholder={t('modal.descriptionPlaceholder')} multiline />
 
         {/* Archive */}
         {!isNew && (
-          <Toggle label="Archive Member" description="Hidden from active lists but data preserved"
+          <Toggle label={t('modal.archiveMember')} description={t('modal.archiveDesc')}
             value={!!f.archived} onChange={v => set('archived', v)} />
         )}
       </Modal>
 
       {/* Confirm Delete */}
       <ConfirmDialog open={!!confirmDelete}
-        title="Delete Member"
-        message="This will permanently remove this member and cannot be undone."
+        title={t('modal.confirmDelete')}
+        message={t('modal.confirmDelete')}
         danger
         onConfirm={() => confirmDelete && deleteMember(confirmDelete)}
         onCancel={() => setConfirmDelete(null)} />

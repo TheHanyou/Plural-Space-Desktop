@@ -400,25 +400,25 @@ export default function ChatView({ members, channels, onUpdate }: Props) {
       {/* ─── Modals ──────────────────────────────────────────────────── */}
 
       {/* New Channel */}
-      <Modal open={showNewChannel} title="New Channel" onClose={() => setShowNewChannel(false)}
-        footer={<Btn onClick={createChannel}>Create</Btn>}>
-        <Field label="Channel Name" value={newChannelName} onChange={setNewChannelName} placeholder="e.g. Planning" />
+      <Modal open={showNewChannel} title={t('chat.newChannel')} onClose={() => setShowNewChannel(false)}
+        footer={<Btn onClick={createChannel}>{t('common.add')}</Btn>}>
+        <Field label={t('chat.channelName')} value={newChannelName} onChange={setNewChannelName} placeholder="e.g. Planning" />
       </Modal>
 
       {/* Rename Channel */}
-      <Modal open={!!editChannelId} title="Rename Channel" onClose={() => setEditChannelId(null)}
+      <Modal open={!!editChannelId} title={t('chat.channelName')} onClose={() => setEditChannelId(null)}
         footer={
           <div style={{ display: 'flex', gap: 8, width: '100%', justifyContent: 'space-between' }}>
-            <Btn variant="danger" onClick={() => { setConfirmDelete(editChannelId); setEditChannelId(null); }}>Delete</Btn>
-            <Btn onClick={() => editChannelId && renameChannel(editChannelId)}>Save</Btn>
+            <Btn variant="danger" onClick={() => { setConfirmDelete(editChannelId); setEditChannelId(null); }}>{t('common.delete')}</Btn>
+            <Btn onClick={() => editChannelId && renameChannel(editChannelId)}>{t('common.save')}</Btn>
           </div>
         }>
-        <Field label="Channel Name" value={editChannelName} onChange={setEditChannelName} />
+        <Field label={t('chat.channelName')} value={editChannelName} onChange={setEditChannelName} />
       </Modal>
 
       {/* Confirm Delete */}
-      <ConfirmDialog open={!!confirmDelete} title="Delete Channel"
-        message="This will permanently delete this channel and all its messages."
+      <ConfirmDialog open={!!confirmDelete} title={t('chat.deleteChannel')}
+        message={t('chat.deleteChannelMsg')}
         danger onConfirm={() => confirmDelete && deleteChannel(confirmDelete)}
         onCancel={() => setConfirmDelete(null)} />
     </div>

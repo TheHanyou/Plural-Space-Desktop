@@ -54,7 +54,10 @@
     "addMood": "+ Add mood",
     "frontNote": "NOTE",
     "whatHappening": "What's happening right now?",
-    "noNote": "No note. Tap ✎ to add one."
+    "noNote": "No note. Tap ✎ to add one.",
+    "clearFront": "Clear Front",
+    "clearFrontTitle": "Clear Front?",
+    "clearFrontMsg": "This will end the current front and save it to history. Are you sure?"
   },
   "members": {
     "title": "Members",
@@ -106,6 +109,7 @@
     "allTags": "All Tags",
     "allAuthors": "All Authors",
     "noEntries": "No entries yet. Start writing.",
+    "noEntriesFilter": "No entries match your filters.",
     "noEntriesTagged": "No entries tagged {{tag}}.",
     "writeEntry": "Write Entry",
     "tapToUnlock": "Tap to unlock this entry",
@@ -204,7 +208,21 @@
     "spFileImport": "Simply Plural File Import",
     "spFileHint": "Import from a Simply Plural data export file.",
     "pickSPFile": "Pick SP Export File",
-    "notValidSPExport": "This file doesn't appear to be a valid Simply Plural export."
+    "notValidSPExport": "This file doesn't appear to be a valid Simply Plural export.",
+    "dangerZone": "Danger Zone",
+    "exportDesc": "Export all system data (members, front history, journal entries) as a JSON file. Compatible with both mobile and desktop versions of Plural Space.",
+    "exportBackup": "Export Backup",
+    "restoreDesc": "Restore from a Plural Space backup file. This will overwrite current data.",
+    "importPSBackup": "Import Plural Space Backup",
+    "importing": "Importing…",
+    "importFromSP": "Import from Simply Plural",
+    "spMergeDesc": "Import from a Simply Plural data export file. Members and front history will be merged with existing data — duplicates are skipped.",
+    "clearAllData": "Clear All Data",
+    "clearAllDataDesc": "Permanently delete all Plural Space data on this device. This cannot be undone.",
+    "clearAllConfirm": "Are you absolutely sure? All members, history, journal entries, chat messages, and settings will be permanently deleted.",
+    "membersCountSimple": "{{count}} members",
+    "historyCount": "{{count}} history entries",
+    "journalCount": "{{count}} journal entries"
   },
   "hub": {
     "title": "Hub",
@@ -231,7 +249,8 @@
     "retroHistory": "Retro History",
     "statistics": "Statistics",
     "systemChat": "System Chat",
-    "discord": "Discord"
+    "discord": "Discord",
+    "dashboard": "Dashboard"
   },
   "modal": {
     "updateFront": "Update Front",
@@ -364,7 +383,13 @@
     "topCoCon": "Top Co-Conscious",
     "topChatters": "Top Chatters",
     "topMoods": "Top Moods",
-    "topLocations": "Top Locations"
+    "topLocations": "Top Locations",
+    "totalSessions": "Total Sessions",
+    "totalFrontTime": "Total Front Time",
+    "uniqueFronters": "Unique Fronters",
+    "chatMessages": "Chat Messages",
+    "noMoodsRecorded": "No moods recorded",
+    "noLocationsRecorded": "No locations recorded"
   },
   "chat": {
     "channels": "Channels",

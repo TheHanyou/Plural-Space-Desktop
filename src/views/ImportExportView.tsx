@@ -183,63 +183,61 @@ export default function ImportExportView({ system, members, history, journal, se
       )}
 
       {/* Export */}
-      <Section label="Backup" />
+      <Section label={t('share.backup')} />
       <div style={{ padding: 16, background: 'var(--surface)', borderRadius: 8, border: '1px solid var(--border)', marginBottom: 16 }}>
         <p style={{ fontSize: 13, color: 'var(--dim)', marginBottom: 12, lineHeight: 1.5 }}>
-          Export all system data (members, front history, journal entries) as a JSON file.
-          Compatible with both mobile and desktop versions of Plural Space.
+          {t('share.exportDesc')}
         </p>
         <div style={{ display: 'flex', gap: 10, fontSize: 11, color: 'var(--muted)', marginBottom: 12 }}>
-          <span>{members.length} members</span>
+          <span>{t('share.membersCountSimple', { count: members.length })}</span>
           <span>·</span>
-          <span>{history.length} history entries</span>
+          <span>{t('share.historyCount', { count: history.length })}</span>
           <span>·</span>
-          <span>{journal.length} journal entries</span>
+          <span>{t('share.journalCount', { count: journal.length })}</span>
         </div>
-        <Btn variant="solid" onClick={handleExport}>Export Backup</Btn>
+        <Btn variant="solid" onClick={handleExport}>{t('share.exportBackup')}</Btn>
       </div>
 
       {/* Import PS */}
-      <Section label="Restore" />
+      <Section label={t('share.restore')} />
       <div style={{ padding: 16, background: 'var(--surface)', borderRadius: 8, border: '1px solid var(--border)', marginBottom: 16 }}>
         <p style={{ fontSize: 13, color: 'var(--dim)', marginBottom: 12, lineHeight: 1.5 }}>
-          Restore from a Plural Space backup file. This will overwrite current data.
+          {t('share.restoreDesc')}
         </p>
         <Btn onClick={handleImportPS} disabled={importing}>
-          {importing ? 'Importing...' : 'Import Plural Space Backup'}
+          {importing ? t('share.importing') : t('share.importPSBackup')}
         </Btn>
       </div>
 
       {/* Import SP */}
-      <Section label="Simply Plural Import" />
+      <Section label={t('share.spImport')} />
       <div style={{ padding: 16, background: 'var(--surface)', borderRadius: 8, border: '1px solid var(--border)', marginBottom: 16 }}>
         <p style={{ fontSize: 13, color: 'var(--dim)', marginBottom: 12, lineHeight: 1.5 }}>
-          Import from a Simply Plural data export file. Members and front history will be
-          merged with existing data — duplicates are skipped.
+          {t('share.spMergeDesc')}
         </p>
         <Btn onClick={handleImportSP} disabled={importing}>
-          {importing ? 'Importing...' : 'Import from Simply Plural'}
+          {importing ? t('share.importing') : t('share.importFromSP')}
         </Btn>
       </div>
 
       {/* Danger Zone */}
-      <Section label="Danger Zone" color="var(--danger)" />
+      <Section label={t('share.dangerZone')} color="var(--danger)" />
       <div style={{ padding: 16, background: 'var(--danger-bg)', borderRadius: 8, border: '1px solid var(--danger)', marginBottom: 16 }}>
         {!confirmClear ? (
           <>
             <p style={{ fontSize: 13, color: 'var(--danger)', marginBottom: 12, lineHeight: 1.5 }}>
-              Permanently delete all Plural Space data on this device. This cannot be undone.
+              {t('share.clearAllDataDesc')}
             </p>
-            <Btn variant="danger" onClick={() => setConfirmClear(true)}>Clear All Data</Btn>
+            <Btn variant="danger" onClick={() => setConfirmClear(true)}>{t('share.clearAllData')}</Btn>
           </>
         ) : (
           <>
             <p style={{ fontSize: 13, color: 'var(--danger)', marginBottom: 12, fontWeight: 600 }}>
-              Are you absolutely sure? All members, history, journal entries, chat messages, and settings will be permanently deleted.
+              {t('share.clearAllConfirm')}
             </p>
             <div style={{ display: 'flex', gap: 8 }}>
-              <Btn variant="ghost" onClick={() => setConfirmClear(false)}>Cancel</Btn>
-              <Btn variant="danger" onClick={clearAllData}>Yes, Delete Everything</Btn>
+              <Btn variant="ghost" onClick={() => setConfirmClear(false)}>{t('common.cancel')}</Btn>
+              <Btn variant="danger" onClick={clearAllData}>{t('share.yesDeleteEverything')}</Btn>
             </div>
           </>
         )}

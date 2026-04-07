@@ -158,30 +158,30 @@ export default function JournalView({ journal, members, onUpdate }: Props) {
 
       {sorted.length === 0 && (
         <div style={{ textAlign: 'center', padding: 40, color: 'var(--muted)', fontSize: 13 }}>
-          {search || tagFilter || authorFilter ? 'No entries match your filters' : 'No journal entries yet'}
+          {search || tagFilter || authorFilter ? t('journal.noEntriesFilter') : t('journal.noEntries')}
         </div>
       )}
 
       {/* Editor Modal */}
-      <Modal open={!!editing} title={isNew ? 'New Entry' : 'Edit Entry'} onClose={() => setEditing(null)}
+      <Modal open={!!editing} title={isNew ? t('modal.newEntry') : t('modal.editEntry')} onClose={() => setEditing(null)}
         footer={
           <div style={{ display: 'flex', gap: 8, width: '100%', justifyContent: 'space-between' }}>
-            <div>{!isNew && <Btn variant="danger" onClick={() => setConfirmDelete(editing?.id || '')}>Delete</Btn>}</div>
+            <div>{!isNew && <Btn variant="danger" onClick={() => setConfirmDelete(editing?.id || '')}>{t('common.delete')}</Btn>}</div>
             <div style={{ display: 'flex', gap: 8 }}>
-              <Btn variant="ghost" onClick={() => setEditing(null)}>Cancel</Btn>
-              <Btn variant="solid" onClick={saveEntry}>Save</Btn>
+              <Btn variant="ghost" onClick={() => setEditing(null)}>{t('common.cancel')}</Btn>
+              <Btn variant="solid" onClick={saveEntry}>{t('common.save')}</Btn>
             </div>
           </div>
         }>
-        <Field label="Title" value={title} onChange={setTitle} placeholder="Entry title" />
+        <Field label={t('modal.entryTitle')} value={title} onChange={setTitle} placeholder={t('modal.entryTitlePlaceholder')} />
 
         {/* Body — plain textarea for now, Tiptap integration next */}
-        <Field label="Body" value={body} onChange={setBody} placeholder="Write your entry..." multiline />
+        <Field label={t('modal.body')} value={body} onChange={setBody} placeholder={t('modal.writeHere')} multiline />
 
         {/* Authors */}
-        <Section label="Authors" />
+        <Section label={t('modal.authors')} />
         <input className="field__input" value={authorSearch} onChange={e => setAuthorSearch(e.target.value)}
-          placeholder="Search members..." style={{ marginBottom: 8 }} />
+          placeholder={t('members.search')} style={{ marginBottom: 8 }} />
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 14 }}>
           {filteredAuthors.slice(0, 12).map(m => {
             const active = authorIds.includes(m.id);
@@ -199,7 +199,7 @@ export default function JournalView({ journal, members, onUpdate }: Props) {
         </div>
 
         {/* Tags */}
-        <Section label="Tags" />
+        <Section label={t('modal.tags')} />
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
           {hashtags.map(tag => (
             <button key={tag} className="chip" style={{ borderColor: 'var(--info)40', background: 'var(--info-bg)' }}
@@ -211,12 +211,12 @@ export default function JournalView({ journal, members, onUpdate }: Props) {
         </div>
         <div className="add-row">
           <input className="field__input" value={tagInput} onChange={e => setTagInput(e.target.value)}
-            placeholder="#tag" onKeyDown={e => { if (e.key === 'Enter') addTag(); }} />
-          <Btn onClick={addTag}>Add</Btn>
+            placeholder={t('modal.topic')} onKeyDown={e => { if (e.key === 'Enter') addTag(); }} />
+          <Btn onClick={addTag}>{t('common.add')}</Btn>
         </div>
       </Modal>
 
-      <ConfirmDialog open={!!confirmDelete} title="Delete Entry" message="This will permanently remove this journal entry."
+      <ConfirmDialog open={!!confirmDelete} title={t('journal.deleteEntry')} message={t('journal.areYouSure')}
         danger onConfirm={() => confirmDelete && deleteEntry(confirmDelete)} onCancel={() => setConfirmDelete(null)} />
     </div>
   );

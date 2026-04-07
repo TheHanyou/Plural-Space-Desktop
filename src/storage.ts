@@ -15,6 +15,9 @@ declare global {
         openFile: (filters?: any[]) => Promise<string | null>;
         saveFile: (defaultName: string) => Promise<string | null>;
       };
+      file: {
+        readAsBase64: (filePath: string) => Promise<string | null>;
+      };
       notify: (title: string, body: string) => Promise<void>;
       window: {
         minimize: () => void;

@@ -165,7 +165,7 @@ export default function StatsView({ history, members, channels }: Props) {
         {(['all', '30d', '7d'] as TimeRange[]).map(r => (
           <button key={r} className={`btn ${range === r ? 'btn--primary' : 'btn--ghost'}`}
             onClick={() => setRange(r)}>
-            {r === 'all' ? 'All Time' : r === '30d' ? '30 Days' : '7 Days'}
+            {r === 'all' ? t('stats.allTime') : r === '30d' ? t('stats.last30') : t('stats.last7')}
           </button>
         ))}
       </div>
@@ -173,10 +173,10 @@ export default function StatsView({ history, members, channels }: Props) {
       {/* Summary cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))', gap: 12, marginBottom: 24 }}>
         {[
-          { label: 'Total Sessions', value: totalSessions.toString() },
-          { label: 'Total Front Time', value: fmtDur(0, totalTime) },
-          { label: 'Unique Fronters', value: fronterTotals.length.toString() },
-          { label: 'Chat Messages', value: totalMsgs.toString() },
+          { label: t('stats.totalSessions'), value: totalSessions.toString() },
+          { label: t('stats.totalFrontTime'), value: fmtDur(0, totalTime) },
+          { label: t('stats.uniqueFronters'), value: fronterTotals.length.toString() },
+          { label: t('stats.chatMessages'), value: totalMsgs.toString() },
         ].map(({ label, value }) => (
           <div key={label} style={{
             padding: 16, background: 'var(--card)', border: '1px solid var(--border)',
@@ -190,27 +190,27 @@ export default function StatsView({ history, members, channels }: Props) {
 
       {/* Leaderboards — 2 column grid */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 20 }}>
-        <Leaderboard title="Top Fronters" data={fronterTotals} mode="time" />
-        <Leaderboard title="Top Co-Fronters" data={coFrontTotals} mode="time" />
-        <Leaderboard title="Top Co-Conscious" data={coConTotals} mode="time" />
-        <Leaderboard title="Top Chatters" data={chatSorted} mode="count" />
+        <Leaderboard title={t('stats.topFronters')} data={fronterTotals} mode="time" />
+        <Leaderboard title={t('stats.topCoFronters')} data={coFrontTotals} mode="time" />
+        <Leaderboard title={t('stats.topCoCon')} data={coConTotals} mode="time" />
+        <Leaderboard title={t('stats.topChatters')} data={chatSorted} mode="count" />
       </div>
 
       {/* Moods & Locations */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))', gap: 20, marginTop: 20 }}>
         <div>
-          <h3 style={{ fontSize: 13, fontFamily: 'var(--font-display)', color: 'var(--accent)', marginBottom: 10 }}>Top Moods</h3>
+          <h3 style={{ fontSize: 13, fontFamily: 'var(--font-display)', color: 'var(--accent)', marginBottom: 10 }}>{t('stats.topMoods')}</h3>
           {moodTotals.slice(0, 5).map(([mood, count]) => (
             <Bar key={mood} label={mood} value={count} max={moodTotals[0]?.[1] || 1} color="var(--info)" suffix={`${count}`} />
           ))}
-          {moodTotals.length === 0 && <span style={{ fontSize: 12, color: 'var(--muted)', fontStyle: 'italic' }}>No moods recorded</span>}
+          {moodTotals.length === 0 && <span style={{ fontSize: 12, color: 'var(--muted)', fontStyle: 'italic' }}>{t('stats.noMoodsRecorded')}</span>}
         </div>
         <div>
-          <h3 style={{ fontSize: 13, fontFamily: 'var(--font-display)', color: 'var(--accent)', marginBottom: 10 }}>Top Locations</h3>
+          <h3 style={{ fontSize: 13, fontFamily: 'var(--font-display)', color: 'var(--accent)', marginBottom: 10 }}>{t('stats.topLocations')}</h3>
           {locationTotals.slice(0, 5).map(([loc, count]) => (
             <Bar key={loc} label={loc} value={count} max={locationTotals[0]?.[1] || 1} color="var(--success)" suffix={`${count}`} />
           ))}
-          {locationTotals.length === 0 && <span style={{ fontSize: 12, color: 'var(--muted)', fontStyle: 'italic' }}>No locations recorded</span>}
+          {locationTotals.length === 0 && <span style={{ fontSize: 12, color: 'var(--muted)', fontStyle: 'italic' }}>{t('stats.noLocationsRecorded')}</span>}
         </div>
       </div>
     </div>

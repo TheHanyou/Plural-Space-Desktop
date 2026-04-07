@@ -54,7 +54,10 @@
     "addMood": "+ Ajouter humeur",
     "frontNote": "NOTE",
     "whatHappening": "Que se passe-t-il en ce moment ?",
-    "noNote": "Aucune note. Appuyez sur ✎ pour en ajouter une."
+    "noNote": "Aucune note. Appuyez sur ✎ pour en ajouter une.",
+    "clearFront": "Effacer le Front",
+    "clearFrontTitle": "Effacer le Front ?",
+    "clearFrontMsg": "Cela mettra fin au front actuel et le sauvegardera dans l'historique. Êtes-vous sûr(e) ?"
   },
   "members": {
     "title": "Membres",
@@ -117,7 +120,8 @@
     "deleteEntry": "Supprimer l'Entrée",
     "areYouSure": "Êtes-vous sûr ?",
     "searchTags": "Rechercher des tags…",
-    "searchAuthors": "Rechercher auteurs…"
+    "searchAuthors": "Rechercher auteurs…",
+    "noEntriesFilter": "Aucune entrée ne correspond à vos filtres."
   },
   "share": {
     "title": "Partager et Exporter",
@@ -204,7 +208,21 @@
     "spFileImport": "Importer un Fichier Simply Plural",
     "spFileHint": "Importer depuis un fichier d'export Simply Plural.",
     "pickSPFile": "Choisir le Fichier SP",
-    "notValidSPExport": "Ce fichier ne semble pas être une exportation Simply Plural valide."
+    "notValidSPExport": "Ce fichier ne semble pas être une exportation Simply Plural valide.",
+    "clearAllConfirm": "Êtes-vous absolument sûr(e) ? Tous les membres, l'historique, les entrées de journal, les messages de chat et les paramètres seront définitivement supprimés.",
+    "clearAllData": "Effacer Toutes les Données",
+    "clearAllDataDesc": "Supprimer définitivement toutes les données de Plural Space sur cet appareil. Cette action est irréversible.",
+    "dangerZone": "Zone Dangereuse",
+    "exportBackup": "Exporter la Sauvegarde",
+    "exportDesc": "Exporter toutes les données système (membres, historique de front, entrées de journal) en fichier JSON. Compatible avec les versions mobile et bureau de Plural Space.",
+    "historyCount": "{{count}} entrées d'historique",
+    "importFromSP": "Importer depuis Simply Plural",
+    "importPSBackup": "Importer une Sauvegarde Plural Space",
+    "importing": "Importation…",
+    "journalCount": "{{count}} entrées de journal",
+    "membersCountSimple": "{{count}} membres",
+    "restoreDesc": "Restaurer depuis un fichier de sauvegarde Plural Space. Cela écrasera les données actuelles.",
+    "spMergeDesc": "Importer depuis un fichier d'exportation Simply Plural. Les membres et l'historique de front seront fusionnés avec les données existantes — les doublons sont ignorés."
   },
   "modal": {
     "updateFront": "Mettre à Jour le Front",
@@ -350,7 +368,8 @@
     "retroHistory": "Historique Rétro",
     "statistics": "Statistiques",
     "systemChat": "Chat Système",
-    "discord": "Discord"
+    "discord": "Discord",
+    "dashboard": "Tableau de Bord"
   },
   "stats": {
     "allTime": "Tout",
@@ -364,7 +383,13 @@
     "topCoCon": "Top Co-Conscient",
     "topChatters": "Plus Actifs",
     "topMoods": "Humeurs Fréquentes",
-    "topLocations": "Lieux Fréquents"
+    "topLocations": "Lieux Fréquents",
+    "chatMessages": "Messages de Chat",
+    "noLocationsRecorded": "Aucun lieu enregistré",
+    "noMoodsRecorded": "Aucune humeur enregistrée",
+    "totalFrontTime": "Temps de Front Total",
+    "totalSessions": "Sessions Totales",
+    "uniqueFronters": "Fronters Uniques"
   },
   "chat": {
     "channels": "Canaux",

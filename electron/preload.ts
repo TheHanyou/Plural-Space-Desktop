@@ -16,6 +16,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
     saveFile: (defaultName: string) => ipcRenderer.invoke('dialog:saveFile', defaultName),
   },
 
+  // File reading
+  file: {
+    readAsBase64: (filePath: string) => ipcRenderer.invoke('file:readAsBase64', filePath),
+  },
+
   // Notifications
   notify: (title: string, body: string) => ipcRenderer.invoke('notify', title, body),
 

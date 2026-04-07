@@ -133,6 +133,24 @@ ipcMain.handle('dialog:saveFile', async (_e, defaultName: string) => {
   return result.canceled ? null : result.filePath;
 });
 
+// ─── IPC: File Reading ──────────────────────────────────────────────────────
+
+ipcMain.handle('file:readAsBase64', async (_e, filePath: string) => {
+  try {
+    const buffer = fs.readFileSync(filePath);
+    const ext = path.extname(filePath).toLowerCase().replace('.', '');
+    const mimeMap: Record<string, string> = {
+      png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg',
+      gif: 'image/gif', webp: 'image/webp', svg: 'image/svg+xml',
+    };
+    const mime = mimeMap[ext] || 'application/octet-stream';
+    return `data:${mime};base64,${buffer.toString('base64')}`;
+  } catch (e) {
+    console.error('[file:readAsBase64] error:', e);
+    return null;
+  }
+});
+
 // ─── IPC: Notifications ─────────────────────────────────────────────────────
 
 ipcMain.handle('notify', (_e, title: string, body: string) => {

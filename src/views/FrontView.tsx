@@ -425,11 +425,11 @@ function SetFrontModal({ open, onClose, onSave, members, groups, current, settin
 
   return (
     <>
-      <Modal open={open} title="Update Front" onClose={onClose}
+      <Modal open={open} title={t('modal.updateFront')} onClose={onClose}
         footer={
           <div style={{ display: 'flex', gap: 8, width: '100%', justifyContent: 'space-between' }}>
-            <Btn variant="ghost" onClick={handleClear}>Clear Front</Btn>
-            <Btn variant="solid" onClick={handleSave}>Save</Btn>
+            <Btn variant="ghost" onClick={handleClear}>{t('front.clearFront')}</Btn>
+            <Btn variant="solid" onClick={handleSave}>{t('common.save')}</Btn>
           </div>
         }>
         <TierPicker tierKey="primary" selectedIds={primaryIds} mood={primaryMood} setMood={setPrimaryMood} note={primaryNote} setNote={setPrimaryNote} color="var(--accent)" />
@@ -438,8 +438,8 @@ function SetFrontModal({ open, onClose, onSave, members, groups, current, settin
       </Modal>
       <ConfirmDialog
         open={confirmClear}
-        title="Clear Front?"
-        message="This will end the current front and save it to history. Are you sure?"
+        title={t('front.clearFrontTitle')}
+        message={t('front.clearFrontMsg')}
         danger
         onConfirm={handleConfirmClear}
         onCancel={() => setConfirmClear(false)}

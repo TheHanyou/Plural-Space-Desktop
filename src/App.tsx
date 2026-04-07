@@ -196,7 +196,7 @@ export default function App() {
         <div className="full-view">
           <div className="full-view__header">
             <button className="full-view__back" onClick={() => setView('dashboard')}>
-              ← Dashboard
+              ← {t('hub.dashboard')}
             </button>
             <span className="full-view__title">
               {view === 'front' ? t('tabs.front')
