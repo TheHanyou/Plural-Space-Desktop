@@ -1,0 +1,22 @@
+directories:
+  output: release
+  buildResources: build
+appId: com.pluralspace.desktop
+productName: Plural Space
+files:
+  - filter:
+      - dist/**/*
+      - dist-electron/**/*
+win:
+  target:
+    - nsis
+    - portable
+mac:
+  target:
+    - dmg
+  category: public.app-category.lifestyle
+linux:
+  target:
+    - AppImage
+    - deb
+electronVersion: 34.5.8

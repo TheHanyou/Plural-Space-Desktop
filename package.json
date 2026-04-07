@@ -1,7 +1,11 @@
 {
   "name": "plural-space-desktop",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Plural Space — Desktop",
+  "author": {
+    "name": "The Hanyou System",
+    "email": "The1Hanyou@gmail.com"
+  },
   "main": "dist-electron/main.js",
   "scripts": {
     "dev": "vite",
@@ -9,7 +13,8 @@
     "preview": "vite preview",
     "electron:dev": "concurrently \"vite\" \"wait-on http://localhost:5173 && tsc -p tsconfig.electron.json && electron .\"",
     "electron:build": "npm run build && electron-builder",
-    "electron:pack": "npm run build && electron-builder --dir"
+    "electron:pack": "npm run build && electron-builder --dir",
+    "postinstall": "node scripts/fix-bin-permissions.js"
   },
   "dependencies": {
     "electron-store": "^8.2.0",
@@ -51,7 +56,8 @@
       "category": "public.app-category.lifestyle"
     },
     "linux": {
-      "target": ["AppImage", "deb"]
+      "target": ["AppImage", "deb"],
+      "category": "Utility"
     }
   }
 }
