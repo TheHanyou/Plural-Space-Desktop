@@ -19,6 +19,7 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // File reading
   file: {
     readAsBase64: (filePath: string) => ipcRenderer.invoke('file:readAsBase64', filePath),
+    write: (filePath: string, content: string) => ipcRenderer.invoke('file:write', filePath, content),
   },
 
   // Notifications

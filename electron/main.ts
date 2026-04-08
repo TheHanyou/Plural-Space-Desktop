@@ -151,6 +151,15 @@ ipcMain.handle('file:readAsBase64', async (_e, filePath: string) => {
   }
 });
 
+ipcMain.handle('file:write', async (_e, filePath: string, content: string) => {
+  try {
+    fs.writeFileSync(filePath, content, 'utf8');
+  } catch (e) {
+    console.error('[file:write] error:', e);
+    throw e;
+  }
+});
+
 // ─── IPC: Notifications ─────────────────────────────────────────────────────
 
 ipcMain.handle('notify', (_e, title: string, body: string) => {

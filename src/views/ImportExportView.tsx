@@ -46,15 +46,25 @@ export default function ImportExportView({ system, members, history, journal, se
       if (msgs && msgs.length > 0) chatMessages[ch.id] = msgs;
     }
 
-    // Extract avatars into separate dict for granular import
+    // Extract avatars into a self-contained dict using the file:readAsBase64 IPC handler.
+    // Desktop avatars may be stored as local file paths; embed them as data: URIs so
+    // the backup is portable. Strip avatar from member objects — avatars dict is authoritative.
     const avatars: Record<string, string> = {};
     for (const m of members) {
-      if (m.avatar) avatars[m.id] = m.avatar;
+      if (!m.avatar) continue;
+      if (m.avatar.startsWith('data:')) {
+        avatars[m.id] = m.avatar;
+      } else {
+        // Local file path — read and embed via IPC
+        const dataUri = await window.electronAPI.file.readAsBase64(m.avatar);
+        if (dataUri) avatars[m.id] = dataUri;
+      }
     }
+    const membersForExport = members.map(({ avatar: _a, ...rest }) => rest as Member);
 
     const payload: ExportPayload = {
-      _meta: { version: '1.1', app: 'PluralSpace-Desktop', exportedAt: new Date().toISOString() },
-      system, members, frontHistory: history, journal,
+      _meta: { version: '1.1', app: 'Plural Space', exportedAt: new Date().toISOString() },
+      system, members: membersForExport, frontHistory: history, journal,
       groups: await store.get(KEYS.groups) || [],
       chatChannels: channels,
       chatMessages,
@@ -66,16 +76,10 @@ export default function ImportExportView({ system, members, history, journal, se
     };
     const json = JSON.stringify(payload, null, 2);
     const defaultName = `PluralSpace_Backup_${new Date().toISOString().slice(0, 10)}.json`;
-    const path = await window.electronAPI.dialog.saveFile(defaultName);
-    if (!path) return;
+    const filePath = await window.electronAPI.dialog.saveFile(defaultName);
+    if (!filePath) return;
 
-    // Write via IPC — we'll need a writeFile handler
-    // For now, use the Blob + download approach as fallback
-    const blob = new Blob([json], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url; a.download = defaultName; a.click();
-    URL.revokeObjectURL(url);
+    await window.electronAPI.file.write(filePath, json);
     showStatus('Backup exported successfully');
   };
 
@@ -112,9 +116,12 @@ export default function ImportExportView({ system, members, history, journal, se
     try {
       if (restoreSel.system && restoreData.system) await store.set(KEYS.system, restoreData.system);
       if (restoreSel.members && restoreData.members) {
+        const avatarMap: Record<string, string> = { ...(restoreData.avatars || {}) };
         const importedMembers = restoreData.members.map((m: any) => {
           if (!restoreSel.avatars) { const { avatar, ...rest } = m; return rest; }
-          return m;
+          // Prefer the avatars dict (embedded data: URI) over any inline avatar field
+          const resolvedAvatar = avatarMap[m.id] ?? m.avatar;
+          return resolvedAvatar ? { ...m, avatar: resolvedAvatar } : m;
         });
         await store.set(KEYS.members, importedMembers);
       } else if (restoreSel.avatars && !restoreSel.members) {

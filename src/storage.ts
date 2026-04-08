@@ -17,6 +17,7 @@ declare global {
       };
       file: {
         readAsBase64: (filePath: string) => Promise<string | null>;
+        write: (filePath: string, content: string) => Promise<void>;
       };
       notify: (title: string, body: string) => Promise<void>;
       window: {
