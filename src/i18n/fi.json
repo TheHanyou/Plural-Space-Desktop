@@ -222,7 +222,13 @@
     "journalCount": "{{count}} päiväkirjamerkintää",
     "membersCountSimple": "{{count}} jäsentä",
     "restoreDesc": "Palauta Plural Space -varmuuskopiotiedostosta. Tämä korvaa nykyiset tiedot.",
-    "spMergeDesc": "Tuo Simply Plural -vientitiedostosta. Jäsenet ja edustahistoria yhdistetään olemassa oleviin tietoihin — kaksoiskappaleet ohitetaan."
+    "spMergeDesc": "Tuo Simply Plural -vientitiedostosta. Jäsenet ja edustahistoria yhdistetään olemassa oleviin tietoihin — kaksoiskappaleet ohitetaan.",
+    "profilePictures": "Profiilikuvat",
+    "memberGroups": "Jäsenryhmät",
+    "chatData": "Chat-kanavat ja Viestit",
+    "customMoodsLabel": "Omat Mielialat",
+    "themePalettes": "Teemapaletit",
+    "appSettings": "Sovellusasetukset"
   },
   "hub": {
     "title": "Hub",

@@ -14,6 +14,21 @@ interface Props {
   onUpdate: () => void;
 }
 
+const HexField = ({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) => {
+  const valid = isValidHex(normalizeHex(value)) || value.length < 2;
+  return (
+    <div style={{ flex: 1 }}>
+      <label className="field__label">{label}</label>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+        <div style={{ width: 20, height: 20, borderRadius: 4, background: valid ? normalizeHex(value) : '#333', border: '1px solid var(--border)' }} />
+        <input className={`field__input field__input--mono ${valid ? '' : 'field__input--error'}`}
+          value={value} onChange={e => onChange(e.target.value)} placeholder="#000000" maxLength={7}
+          style={{ width: '100%' }} />
+      </div>
+    </div>
+  );
+};
+
 const LANG_NAMES: Record<string, string> = {
   en: 'English', es: 'Español', fr: 'Français', de: 'Deutsch',
   pt: 'Português', fi: 'Suomi', nb: 'Norsk',
@@ -133,20 +148,6 @@ export default function SettingsView({ system, settings, palettes, onUpdate }: P
     }
   };
 
-  const HexField = ({ label, value, onChange }: { label: string; value: string; onChange: (v: string) => void }) => {
-    const valid = isValidHex(normalizeHex(value)) || value.length < 2;
-    return (
-      <div style={{ flex: 1 }}>
-        <label className="field__label">{label}</label>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-          <div style={{ width: 20, height: 20, borderRadius: 4, background: valid ? normalizeHex(value) : '#333', border: '1px solid var(--border)' }} />
-          <input className={`field__input field__input--mono ${valid ? '' : 'field__input--error'}`}
-            value={value} onChange={e => onChange(e.target.value)} placeholder="#000000" maxLength={7}
-            style={{ width: '100%' }} />
-        </div>
-      </div>
-    );
-  };
 
   return (
     <div style={{ maxWidth: 640, margin: '0 auto' }}>

@@ -222,7 +222,13 @@
     "journalCount": "{{count}} dagbokoppføringer",
     "membersCountSimple": "{{count}} medlemmer",
     "restoreDesc": "Gjenopprett fra en Plural Space-sikkerhetskopifil. Dette vil overskrive gjeldende data.",
-    "spMergeDesc": "Importer fra en Simply Plural-eksportfil. Medlemmer og fronthistorikk vil bli slått sammen med eksisterende data — duplikater hoppes over."
+    "spMergeDesc": "Importer fra en Simply Plural-eksportfil. Medlemmer og fronthistorikk vil bli slått sammen med eksisterende data — duplikater hoppes over.",
+    "profilePictures": "Profilbilder",
+    "memberGroups": "Medlemsgrupper",
+    "chatData": "Chat-kanaler og Meldinger",
+    "customMoodsLabel": "Egendefinerte Humør",
+    "themePalettes": "Temapaletter",
+    "appSettings": "Appinnstillinger"
   },
   "hub": {
     "title": "Hub",

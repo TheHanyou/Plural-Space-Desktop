@@ -222,7 +222,13 @@
     "journalCount": "{{count}} entradas de diário",
     "membersCountSimple": "{{count}} membros",
     "restoreDesc": "Restaurar a partir de um arquivo de backup do Plural Space. Isso substituirá os dados atuais.",
-    "spMergeDesc": "Importar de um arquivo de exportação do Simply Plural. Membros e histórico de front serão mesclados com os dados existentes — duplicatas são ignoradas."
+    "spMergeDesc": "Importar de um arquivo de exportação do Simply Plural. Membros e histórico de front serão mesclados com os dados existentes — duplicatas são ignoradas.",
+    "profilePictures": "Fotos de Perfil",
+    "memberGroups": "Grupos de Membros",
+    "chatData": "Canais e Mensagens de Chat",
+    "customMoodsLabel": "Humores Personalizados",
+    "themePalettes": "Paletas de Temas",
+    "appSettings": "Configurações do App"
   },
   "hub": {
     "title": "Central",

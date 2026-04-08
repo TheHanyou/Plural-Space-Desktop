@@ -23,6 +23,13 @@ export default function ImportExportView({ system, members, history, journal, se
   const { t } = useTranslation();
   const [status, setStatus] = useState<string | null>(null);
   const [importing, setImporting] = useState(false);
+  const [restoreData, setRestoreData] = useState<ExportPayload | null>(null);
+  const [restoreFile, setRestoreFile] = useState<string | null>(null);
+  const [restoreSel, setRestoreSel] = useState({
+    system: true, members: true, avatars: true, frontHistory: true, journal: true,
+    groups: true, chat: true, moods: true, palettes: true, settings: true,
+  });
+  const togR = (k: string) => setRestoreSel(s => ({ ...s, [k]: !s[k as keyof typeof s] }));
 
   const showStatus = (msg: string) => {
     setStatus(msg);
@@ -32,9 +39,30 @@ export default function ImportExportView({ system, members, history, journal, se
   // ─── Export ─────────────────────────────────────────────────────────────
 
   const handleExport = async () => {
+    // Gather chat messages per channel
+    const chatMessages: Record<string, any[]> = {};
+    for (const ch of channels) {
+      const msgs = await store.get<any[]>(chatMsgKey(ch.id));
+      if (msgs && msgs.length > 0) chatMessages[ch.id] = msgs;
+    }
+
+    // Extract avatars into separate dict for granular import
+    const avatars: Record<string, string> = {};
+    for (const m of members) {
+      if (m.avatar) avatars[m.id] = m.avatar;
+    }
+
     const payload: ExportPayload = {
-      _meta: { version: '1.3.0', app: 'PluralSpace-Desktop', exportedAt: new Date().toISOString() },
+      _meta: { version: '1.1', app: 'PluralSpace-Desktop', exportedAt: new Date().toISOString() },
       system, members, frontHistory: history, journal,
+      groups: await store.get(KEYS.groups) || [],
+      chatChannels: channels,
+      chatMessages,
+      settings,
+      front: await store.get(KEYS.front) || null,
+      palettes,
+      avatars,
+      customMoods: settings?.customMoods || [],
     };
     const json = JSON.stringify(payload, null, 2);
     const defaultName = `PluralSpace_Backup_${new Date().toISOString().slice(0, 10)}.json`;
@@ -53,8 +81,7 @@ export default function ImportExportView({ system, members, history, journal, se
 
   // ─── Import (Plural Space format) ──────────────────────────────────────
 
-  const handleImportPS = async () => {
-    setImporting(true);
+  const handlePickBackup = async () => {
     try {
       const input = document.createElement('input');
       input.type = 'file';
@@ -70,17 +97,69 @@ export default function ImportExportView({ system, members, history, journal, se
           return;
         }
 
-        if (data.system) await store.set(KEYS.system, data.system);
-        if (data.members) await store.set(KEYS.members, data.members);
-        if (data.frontHistory) await store.set(KEYS.history, data.frontHistory);
-        if (data.journal) await store.set(KEYS.journal, data.journal);
-
-        showStatus(`Imported: ${data.members?.length || 0} members, ${data.frontHistory?.length || 0} history entries, ${data.journal?.length || 0} journal entries`);
-        onUpdate();
+        setRestoreData(data);
+        setRestoreFile(file.name);
       };
       input.click();
     } catch (e: any) {
       showStatus(`Import error: ${e.message}`);
+    }
+  };
+
+  const handleRestore = async () => {
+    if (!restoreData) return;
+    setImporting(true);
+    try {
+      if (restoreSel.system && restoreData.system) await store.set(KEYS.system, restoreData.system);
+      if (restoreSel.members && restoreData.members) {
+        const importedMembers = restoreData.members.map((m: any) => {
+          if (!restoreSel.avatars) { const { avatar, ...rest } = m; return rest; }
+          return m;
+        });
+        await store.set(KEYS.members, importedMembers);
+      } else if (restoreSel.avatars && !restoreSel.members) {
+        const avatarMap: Record<string, string> = { ...(restoreData.avatars || {}) };
+        for (const m of (restoreData.members || [])) { if ((m as any).avatar && !avatarMap[m.id]) avatarMap[m.id] = (m as any).avatar; }
+        if (Object.keys(avatarMap).length > 0) {
+          const existing = await store.get<Member[]>(KEYS.members) || [];
+          const updated = existing.map(m => avatarMap[m.id] ? { ...m, avatar: avatarMap[m.id] } : m);
+          await store.set(KEYS.members, updated);
+        }
+      }
+      if (restoreSel.journal && restoreData.journal) await store.set(KEYS.journal, restoreData.journal);
+      if (restoreSel.frontHistory && restoreData.frontHistory) {
+        await store.set(KEYS.history, restoreData.frontHistory);
+        if (restoreData.front !== undefined) await store.set(KEYS.front, restoreData.front);
+      }
+      if (restoreSel.groups && restoreData.groups) await store.set(KEYS.groups, restoreData.groups);
+      if (restoreSel.chat) {
+        if (restoreData.chatChannels) await store.set(KEYS.chatChannels, restoreData.chatChannels);
+        if (restoreData.chatMessages) {
+          for (const [chId, msgs] of Object.entries(restoreData.chatMessages)) {
+            await store.set(chatMsgKey(chId), msgs);
+          }
+        }
+      }
+      if (restoreSel.settings || restoreSel.moods) {
+        const currentSettings = await store.get<any>(KEYS.settings) || {};
+        let newSettings = { ...currentSettings };
+        if (restoreSel.settings && restoreData.settings) {
+          newSettings = { ...restoreData.settings };
+          if (!restoreSel.moods) newSettings.customMoods = currentSettings.customMoods || [];
+        }
+        if (restoreSel.moods) {
+          newSettings.customMoods = restoreData.customMoods || restoreData.settings?.customMoods || [];
+        }
+        await store.set(KEYS.settings, newSettings);
+      }
+      if (restoreSel.palettes && restoreData.palettes) await store.set(KEYS.palettes, restoreData.palettes);
+
+      showStatus('Restore complete');
+      setRestoreData(null);
+      setRestoreFile(null);
+      onUpdate();
+    } catch (e: any) {
+      showStatus(`Restore error: ${e.message}`);
     } finally {
       setImporting(false);
     }
@@ -204,9 +283,49 @@ export default function ImportExportView({ system, members, history, journal, se
         <p style={{ fontSize: 13, color: 'var(--dim)', marginBottom: 12, lineHeight: 1.5 }}>
           {t('share.restoreDesc')}
         </p>
-        <Btn onClick={handleImportPS} disabled={importing}>
-          {importing ? t('share.importing') : t('share.importPSBackup')}
+        <Btn onClick={handlePickBackup}>
+          {restoreFile || t('share.importPSBackup')}
         </Btn>
+        {restoreData && (
+          <div style={{ marginTop: 14 }}>
+            <div style={{ fontSize: 10, letterSpacing: 1, textTransform: 'uppercase', color: 'var(--dim)', fontWeight: 600, marginBottom: 8 }}>
+              {t('share.restoreCategories')}
+            </div>
+            <div style={{ background: 'var(--card)', borderRadius: 8, border: '1px solid var(--border)', overflow: 'hidden', marginBottom: 12 }}>
+              {([
+                ['system', t('share.systemNameDesc'), !!restoreData.system, null],
+                ['members', t('share.memberProfiles'), !!restoreData.members, restoreData.members?.length],
+                ['avatars', t('share.profilePictures'), !!(restoreData.avatars && Object.keys(restoreData.avatars).length > 0) || !!(restoreData.members?.some((m: any) => m.avatar)), restoreData.avatars ? Object.keys(restoreData.avatars).length : restoreData.members?.filter((m: any) => m.avatar).length || 0],
+                ['frontHistory', t('share.frontHistory'), !!restoreData.frontHistory, restoreData.frontHistory?.length],
+                ['journal', t('share.journalEntries'), !!restoreData.journal, restoreData.journal?.length],
+                ['groups', t('share.memberGroups'), !!restoreData.groups?.length, restoreData.groups?.length],
+                ['chat', t('share.chatData'), !!restoreData.chatChannels?.length, restoreData.chatChannels?.length],
+                ['moods', t('share.customMoodsLabel'), !!(restoreData.customMoods?.length || restoreData.settings?.customMoods?.length), restoreData.customMoods?.length || restoreData.settings?.customMoods?.length || 0],
+                ['palettes', t('share.themePalettes'), !!restoreData.palettes?.length, restoreData.palettes?.length],
+                ['settings', t('share.appSettings'), !!restoreData.settings, null],
+              ] as [string, string, boolean, number | null][]).map(([k, label, avail, count]) => (
+                <label key={k} style={{
+                  display: 'flex', alignItems: 'center', gap: 10, padding: '8px 12px',
+                  borderBottom: '1px solid var(--border)', opacity: avail ? 1 : 0.4,
+                  cursor: avail ? 'pointer' : 'default',
+                }}>
+                  <input type="checkbox" checked={avail && restoreSel[k as keyof typeof restoreSel]}
+                    disabled={!avail} onChange={() => togR(k)} />
+                  <span style={{ flex: 1, fontSize: 13, color: 'var(--text)' }}>{label}</span>
+                  <span style={{ fontSize: 11, color: 'var(--muted)' }}>
+                    {avail ? (count !== null ? `${count}` : '✓') : t('common.notInExport')}
+                  </span>
+                </label>
+              ))}
+            </div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <Btn variant="ghost" onClick={() => { setRestoreData(null); setRestoreFile(null); }}>{t('common.cancel')}</Btn>
+              <Btn variant="danger" onClick={handleRestore} disabled={importing}>
+                {importing ? t('share.importing') : t('share.restoreSelectedData')}
+              </Btn>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Import SP */}
