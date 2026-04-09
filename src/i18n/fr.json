@@ -96,7 +96,8 @@
     "now": "maintenant",
     "mood": "humeur",
     "at": "à",
-    "searchMember": "Rechercher des membres…"
+    "searchMember": "Rechercher des membres…",
+    "noHistoryFilter": "Aucun historique ne correspond à vos filtres."
   },
   "journal": {
     "title": "Journal",

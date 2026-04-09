@@ -242,6 +242,111 @@ export default function ImportExportView({ system, members, history, journal, se
     }
   };
 
+  // ─── Token Import (SP + PK) ─────────────────────────────────────────────
+
+  const [extSource, setExtSource] = useState<'sp' | 'pk'>('sp');
+  const [extToken, setExtToken] = useState('');
+  const [extLoading, setExtLoading] = useState(false);
+  const [extPreview, setExtPreview] = useState<{members: any[]; switches: any[]; system: any} | null>(null);
+  const [extSel, setExtSel] = useState({system: true, members: true, frontHistory: true});
+  const togE = (k: string) => setExtSel(s => ({...s, [k]: !s[k as keyof typeof s]}));
+
+  const handleTokenFetch = async () => {
+    if (!extToken.trim()) { showStatus(t('share.tokenRequired')); return; }
+    setExtLoading(true); setExtPreview(null);
+    try {
+      if (extSource === 'sp') {
+        const headers: any = {Authorization: extToken.trim(), 'Content-Type': 'application/json'};
+        const meRes = await fetch('https://v2.apparyllis.com/v1/me', {headers});
+        if (!meRes.ok) throw new Error(t('share.authFailed', {status: meRes.status}));
+        const meData = await meRes.json();
+        const userId = meData.id || meData.uid;
+        const [mRes, sRes] = await Promise.all([
+          fetch(`https://v2.apparyllis.com/v1/members/${userId}`, {headers}),
+          fetch(`https://v2.apparyllis.com/v1/frontHistory/${userId}?startTime=0&endTime=${Date.now()}`, {headers}),
+        ]);
+        const mData = await mRes.json().catch(() => []);
+        const sData = await sRes.json().catch(() => []);
+        setExtPreview({system: meData, members: Array.isArray(mData) ? mData : (mData.members || []), switches: Array.isArray(sData) ? sData : (sData.switches || sData.frontHistory || [])});
+      } else {
+        const headers: any = {Authorization: extToken.trim(), 'Content-Type': 'application/json', 'User-Agent': 'PluralSpace/1.0'};
+        const [sRes, mRes, swRes] = await Promise.all([
+          fetch('https://api.pluralkit.me/v2/systems/@me', {headers}),
+          fetch('https://api.pluralkit.me/v2/systems/@me/members', {headers}),
+          fetch('https://api.pluralkit.me/v2/systems/@me/switches?limit=500', {headers}),
+        ]);
+        if (!sRes.ok) throw new Error(t('share.authFailed', {status: sRes.status}));
+        const sData = await sRes.json().catch(() => ({}));
+        const mData = await mRes.json().catch(() => []);
+        const swData = await swRes.json().catch(() => []);
+        setExtPreview({system: sData, members: Array.isArray(mData) ? mData : [], switches: Array.isArray(swData) ? swData : []});
+      }
+    } catch (e: any) { showStatus(`${t('share.importFailed')}: ${e.message}`); }
+    finally { setExtLoading(false); }
+  };
+
+  const handleTokenImport = async () => {
+    if (!extPreview) return;
+    const isPK = extSource === 'pk';
+    setImporting(true);
+    try {
+      if (extSel.system && extPreview.system) {
+        const name = isPK ? extPreview.system.name : (extPreview.system.content?.username || extPreview.system.content?.name || extPreview.system.username || system.name);
+        const desc = isPK ? (extPreview.system.description || system.description) : (extPreview.system.content?.desc || extPreview.system.content?.description || system.description);
+        await store.set(KEYS.system, {...system, name: name || system.name, description: desc});
+      }
+      const newM: Member[] = extSel.members && extPreview.members.length > 0
+        ? extPreview.members.map((m: any) => ({
+            id: uid(), name: isPK ? (m.display_name || m.name) : (m.content?.name || m.name || 'Unknown'),
+            pronouns: isPK ? (m.pronouns || '') : (m.content?.pronouns || ''),
+            role: isPK ? '' : (m.content?.role || ''),
+            color: isPK ? (m.color ? `#${m.color}` : '#DAA520') : (m.content?.color || '#DAA520'),
+            description: isPK ? (m.description || '') : (m.content?.desc || ''),
+            avatar: isPK ? (m.avatar_url || undefined) : (m.content?.avatarUrl || undefined),
+            tags: [] as string[], groupIds: [] as string[],
+          }))
+        : [];
+      if (newM.length > 0) {
+        const merged = [...members, ...newM.filter(nm => !members.find(em => em.name.toLowerCase() === nm.name.toLowerCase()))];
+        await store.set(KEYS.members, merged);
+      }
+      if (extSel.frontHistory && extPreview.switches.length > 0) {
+        const allMembers = newM.length > 0 ? [...members, ...newM] : members;
+        const idMap: Record<string, string> = {};
+        extPreview.members.forEach((m: any, i: number) => {
+          const eid = isPK ? (m.uuid || m.id) : m.id;
+          const name = isPK ? (m.display_name || m.name || '') : (m.content?.name || m.name || '');
+          const lm = allMembers.find(l => l.name.toLowerCase() === name.toLowerCase());
+          if (eid && lm) idMap[eid] = lm.id;
+          if (isPK && m.id && lm) idMap[m.id] = lm.id;
+        });
+        const newH: HistoryEntry[] = isPK
+          ? extPreview.switches.map((sw: any, i: number, arr: any[]) => {
+              const next = arr[i - 1];
+              const ids = (Array.isArray(sw.members) ? sw.members : []).map((eid: string) => idMap[eid]).filter(Boolean) as string[];
+              return {memberIds: ids, startTime: new Date(sw.timestamp).getTime(), endTime: next ? new Date(next.timestamp).getTime() : null, note: ''} as HistoryEntry;
+            }).filter((h: HistoryEntry) => h.memberIds.length > 0)
+          : extPreview.switches.map((sw: any) => {
+              const externalIds: string[] = Array.isArray(sw.members) ? sw.members : (sw.content?.member ? [sw.content.member] : []);
+              const ids = externalIds.map((eid: string) => idMap[eid]).filter(Boolean) as string[];
+              const rawTs = sw.content?.startTime || sw.content?.timestamp || sw.timestamp;
+              const startTime = typeof rawTs === 'number' ? rawTs : new Date(rawTs).getTime();
+              const rawEnd = sw.content?.endTime;
+              const endTime = rawEnd ? (typeof rawEnd === 'number' ? rawEnd : new Date(rawEnd).getTime()) : null;
+              return {memberIds: ids, startTime, endTime, note: ''} as HistoryEntry;
+            }).filter((h: HistoryEntry) => h.memberIds.length > 0 && h.startTime > 0);
+        if (newH.length > 0) {
+          const merged = [...newH, ...history].sort((a, b) => b.startTime - a.startTime).slice(0, 1000);
+          await store.set(KEYS.history, merged);
+        }
+      }
+      showStatus(`Imported: ${newM.length} members, ${extPreview.switches.length} switches`);
+      setExtPreview(null); setExtToken('');
+      onUpdate();
+    } catch (e: any) { showStatus(`Import error: ${e.message}`); }
+    finally { setImporting(false); }
+  };
+
   // ─── Clear All Data ────────────────────────────────────────────────────
 
   const [confirmClear, setConfirmClear] = useState(false);
@@ -344,6 +449,55 @@ export default function ImportExportView({ system, members, history, journal, se
         <Btn onClick={handleImportSP} disabled={importing}>
           {importing ? t('share.importing') : t('share.importFromSP')}
         </Btn>
+      </div>
+
+      {/* Token Import (SP / PK) */}
+      <Section label={t('share.spImport') + ' / ' + t('share.pkImport') + ' (Token)'} />
+      <div style={{ padding: 16, background: 'var(--surface)', borderRadius: 8, border: '1px solid var(--border)', marginBottom: 16 }}>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+          <Btn variant={extSource === 'sp' ? 'solid' : 'ghost'} onClick={() => { setExtSource('sp'); setExtPreview(null); setExtToken(''); }}>
+            {t('share.simplyPlural')}
+          </Btn>
+          <Btn variant={extSource === 'pk' ? 'solid' : 'ghost'} onClick={() => { setExtSource('pk'); setExtPreview(null); setExtToken(''); }}>
+            {t('share.pluralKit')}
+          </Btn>
+        </div>
+        <p style={{ fontSize: 12, color: 'var(--dim)', marginBottom: 10, lineHeight: 1.5 }}>
+          {extSource === 'sp' ? t('share.spTokenHint') : t('share.pkTokenHint')}
+        </p>
+        <div style={{ display: 'flex', gap: 8, marginBottom: 12 }}>
+          <input className="field__input" value={extToken} onChange={e => setExtToken(e.target.value)}
+            placeholder={extSource === 'sp' ? t('share.spTokenPlaceholder') : t('share.pkTokenPlaceholder')}
+            style={{ flex: 1, fontFamily: 'monospace', fontSize: 12 }} />
+          <Btn onClick={handleTokenFetch} disabled={extLoading}>
+            {extLoading ? t('share.fetching') : t('share.fetchData')}
+          </Btn>
+        </div>
+        {extPreview && (
+          <div style={{ background: 'var(--card)', borderRadius: 8, border: '1px solid var(--border)', padding: 12, marginTop: 8 }}>
+            <div style={{ fontSize: 11, color: 'var(--muted)', marginBottom: 8 }}>
+              {t('share.membersCount', {count: extPreview.members.length})} · {t('share.frontEntries', {count: extPreview.switches.length})}
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 12 }}>
+              {([
+                ['system', t('share.systemNameDesc'), true],
+                ['members', t('share.memberProfiles'), extPreview.members.length > 0],
+                ['frontHistory', t('share.frontHistory'), extPreview.switches.length > 0],
+              ] as [string, string, boolean][]).map(([k, label, avail]) => (
+                <label key={k} style={{ display: 'flex', alignItems: 'center', gap: 8, opacity: avail ? 1 : 0.4, cursor: avail ? 'pointer' : 'default' }}>
+                  <input type="checkbox" checked={avail && extSel[k as keyof typeof extSel]} disabled={!avail} onChange={() => togE(k)} />
+                  <span style={{ fontSize: 13, color: 'var(--text)' }}>{label}</span>
+                </label>
+              ))}
+            </div>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <Btn variant="ghost" onClick={() => { setExtPreview(null); setExtToken(''); }}>{t('common.cancel')}</Btn>
+              <Btn variant="solid" onClick={handleTokenImport} disabled={importing}>
+                {importing ? t('share.importing') : t('share.importSelected')}
+              </Btn>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Danger Zone */}

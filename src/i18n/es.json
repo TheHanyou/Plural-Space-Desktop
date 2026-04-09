@@ -96,7 +96,8 @@
     "tierSuffix": " ({{tier}})",
     "now": "ahora",
     "mood": "ánimo",
-    "at": "en"
+    "at": "en",
+    "noHistoryFilter": "Ningún historial coincide con tus filtros."
   },
   "journal": {
     "title": "Diario",

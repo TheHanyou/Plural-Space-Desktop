@@ -79,6 +79,7 @@
     "frontHistory": "Front History",
     "memberHistory": "Member History",
     "noHistory": "No history yet. Front changes will appear here automatically.",
+    "noHistoryFilter": "No history matches your filters.",
     "noMembers": "No members added yet.",
     "noActivity": "No recorded activity for {{name}} yet.",
     "selectMember": "Select a member",

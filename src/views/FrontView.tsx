@@ -26,6 +26,7 @@ const TIER_COLORS: Record<FrontTierKey, string> = {
 const TIER_ORDER: FrontTierKey[] = ['primary', 'coFront', 'coConscious'];
 
 export default function FrontView({ front, members, groups, history, settings, onUpdate }: Props) {
+  const { t } = useTranslation();
   const [tick, setTick] = useState(0);
   const [showSetFront, setShowSetFront] = useState(false);
   const [editDetailTier, setEditDetailTier] = useState<FrontTierKey | null>(null);
@@ -187,7 +188,7 @@ export default function FrontView({ front, members, groups, history, settings, o
                 placeholder="What's happening?" style={{ minHeight: 56, fontSize: 12 }} />
             ) : (
               <p style={{ fontSize: 12, lineHeight: 1.5, color: tier.note ? 'var(--text)' : 'var(--muted)' }}>
-                {tier.note || 'No note'}
+                {tier.note || t('front.noNote')}
               </p>
             )}
           </div>

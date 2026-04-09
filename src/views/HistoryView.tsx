@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Member, HistoryEntry, FrontTierKey, TIER_LABELS, fmtTime, fmtDur, fmtDate, getInitials } from '../utils';
 
 interface Props {
@@ -9,6 +10,7 @@ interface Props {
 type TimeRange = 'all' | '7d' | '30d' | '90d';
 
 export default function HistoryView({ history, members }: Props) {
+  const { t } = useTranslation();
   const [search, setSearch] = useState('');
   const [range, setRange] = useState<TimeRange>('all');
   const [memberFilter, setMemberFilter] = useState('');
@@ -98,7 +100,7 @@ export default function HistoryView({ history, members }: Props) {
             <button key={r} className={`btn ${range === r ? 'btn--primary' : 'btn--ghost'}`}
               style={{ padding: '7px 10px', fontSize: 12 }}
               onClick={() => setRange(r)}>
-              {r === 'all' ? 'All' : r}
+              {r === 'all' ? t('stats.allTime') : r}
             </button>
           ))}
         </div>
@@ -166,7 +168,7 @@ export default function HistoryView({ history, members }: Props) {
 
       {filtered.length === 0 && (
         <div style={{ textAlign: 'center', padding: 40, color: 'var(--muted)', fontSize: 13 }}>
-          {search || memberFilter ? 'No history matches your filters' : 'No front history yet'}
+          {search || memberFilter ? t('history.noHistoryFilter') : t('history.noHistory')}
         </div>
       )}
     </div>
