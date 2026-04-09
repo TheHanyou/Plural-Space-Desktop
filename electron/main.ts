@@ -190,11 +190,57 @@ function createTray(): void {
   tray.on('click', () => mainWindow?.show());
 }
 
+// ─── Application Menu (enables Copy/Paste/Cut shortcuts) ─────────────────────
+
+function createAppMenu(): void {
+  const template: Electron.MenuItemConstructorOptions[] = [
+    ...(process.platform === 'darwin' ? [{
+      label: app.name,
+      submenu: [
+        { role: 'about' as const },
+        { type: 'separator' as const },
+        { role: 'hide' as const },
+        { role: 'hideOthers' as const },
+        { role: 'unhide' as const },
+        { type: 'separator' as const },
+        { role: 'quit' as const },
+      ],
+    }] : []),
+    {
+      label: 'Edit',
+      submenu: [
+        { role: 'undo' },
+        { role: 'redo' },
+        { type: 'separator' },
+        { role: 'cut' },
+        { role: 'copy' },
+        { role: 'paste' },
+        { role: 'selectAll' },
+      ],
+    },
+  ];
+  Menu.setApplicationMenu(Menu.buildFromTemplate(template));
+}
+
 // ─── App Lifecycle ───────────────────────────────────────────────────────────
 
 app.whenReady().then(() => {
+  createAppMenu();
   createWindow();
   createTray();
+
+  // Right-click context menu in renderer
+  if (mainWindow) {
+    mainWindow.webContents.on('context-menu', (_e, params) => {
+      const menu = Menu.buildFromTemplate([
+        { role: 'cut', visible: params.isEditable },
+        { role: 'copy' },
+        { role: 'paste', visible: params.isEditable },
+        { role: 'selectAll', visible: params.isEditable },
+      ]);
+      menu.popup();
+    });
+  }
 
   app.on('activate', () => {
     if (BrowserWindow.getAllWindows().length === 0) createWindow();
