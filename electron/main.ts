@@ -160,6 +160,22 @@ ipcMain.handle('file:write', async (_e, filePath: string, content: string) => {
   }
 });
 
+// ─── IPC: Network Fetch (CORS proxy) ────────────────────────────────────────
+
+ipcMain.handle('net:fetch', async (_e, url: string, options?: { method?: string; headers?: Record<string, string>; body?: string }) => {
+  try {
+    const res = await fetch(url, {
+      method: options?.method || 'GET',
+      headers: options?.headers || {},
+      body: options?.body,
+    });
+    const text = await res.text();
+    return { ok: res.ok, status: res.status, text };
+  } catch (e: any) {
+    return { ok: false, status: 0, text: e.message };
+  }
+});
+
 // ─── IPC: Notifications ─────────────────────────────────────────────────────
 
 ipcMain.handle('notify', (_e, title: string, body: string) => {

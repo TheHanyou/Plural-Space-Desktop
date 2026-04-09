@@ -19,6 +19,10 @@ declare global {
         readAsBase64: (filePath: string) => Promise<string | null>;
         write: (filePath: string, content: string) => Promise<void>;
       };
+      net: {
+        fetch: (url: string, options?: { method?: string; headers?: Record<string, string>; body?: string }) =>
+          Promise<{ ok: boolean; status: number; text: string }>;
+      };
       notify: (title: string, body: string) => Promise<void>;
       window: {
         minimize: () => void;

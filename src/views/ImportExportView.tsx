@@ -254,31 +254,28 @@ export default function ImportExportView({ system, members, history, journal, se
   const handleTokenFetch = async () => {
     if (!extToken.trim()) { showStatus(t('share.tokenRequired')); return; }
     setExtLoading(true); setExtPreview(null);
+    const netFetch = async (url: string, headers: Record<string, string>) => {
+      const res = await window.electronAPI.net.fetch(url, { headers });
+      if (!res.ok) throw new Error(t('share.authFailed', {status: res.status}));
+      try { return JSON.parse(res.text); } catch { return {}; }
+    };
     try {
       if (extSource === 'sp') {
-        const headers: any = {Authorization: extToken.trim(), 'Content-Type': 'application/json'};
-        const meRes = await fetch('https://v2.apparyllis.com/v1/me', {headers});
-        if (!meRes.ok) throw new Error(t('share.authFailed', {status: meRes.status}));
-        const meData = await meRes.json();
+        const headers = {Authorization: extToken.trim(), 'Content-Type': 'application/json'};
+        const meData = await netFetch('https://v2.apparyllis.com/v1/me', headers);
         const userId = meData.id || meData.uid;
-        const [mRes, sRes] = await Promise.all([
-          fetch(`https://v2.apparyllis.com/v1/members/${userId}`, {headers}),
-          fetch(`https://v2.apparyllis.com/v1/frontHistory/${userId}?startTime=0&endTime=${Date.now()}`, {headers}),
+        const [mData, sData] = await Promise.all([
+          netFetch(`https://v2.apparyllis.com/v1/members/${userId}`, headers),
+          netFetch(`https://v2.apparyllis.com/v1/frontHistory/${userId}?startTime=0&endTime=${Date.now()}`, headers),
         ]);
-        const mData = await mRes.json().catch(() => []);
-        const sData = await sRes.json().catch(() => []);
         setExtPreview({system: meData, members: Array.isArray(mData) ? mData : (mData.members || []), switches: Array.isArray(sData) ? sData : (sData.switches || sData.frontHistory || [])});
       } else {
-        const headers: any = {Authorization: extToken.trim(), 'Content-Type': 'application/json', 'User-Agent': 'PluralSpace/1.0'};
-        const [sRes, mRes, swRes] = await Promise.all([
-          fetch('https://api.pluralkit.me/v2/systems/@me', {headers}),
-          fetch('https://api.pluralkit.me/v2/systems/@me/members', {headers}),
-          fetch('https://api.pluralkit.me/v2/systems/@me/switches?limit=500', {headers}),
+        const headers = {Authorization: extToken.trim(), 'Content-Type': 'application/json'};
+        const [sData, mData, swData] = await Promise.all([
+          netFetch('https://api.pluralkit.me/v2/systems/@me', headers),
+          netFetch('https://api.pluralkit.me/v2/systems/@me/members', headers),
+          netFetch('https://api.pluralkit.me/v2/systems/@me/switches?limit=500', headers),
         ]);
-        if (!sRes.ok) throw new Error(t('share.authFailed', {status: sRes.status}));
-        const sData = await sRes.json().catch(() => ({}));
-        const mData = await mRes.json().catch(() => []);
-        const swData = await swRes.json().catch(() => []);
         setExtPreview({system: sData, members: Array.isArray(mData) ? mData : [], switches: Array.isArray(swData) ? swData : []});
       }
     } catch (e: any) { showStatus(`${t('share.importFailed')}: ${e.message}`); }

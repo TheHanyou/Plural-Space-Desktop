@@ -22,6 +22,12 @@ contextBridge.exposeInMainWorld('electronAPI', {
     write: (filePath: string, content: string) => ipcRenderer.invoke('file:write', filePath, content),
   },
 
+  // Network fetch (CORS proxy)
+  net: {
+    fetch: (url: string, options?: { method?: string; headers?: Record<string, string>; body?: string }) =>
+      ipcRenderer.invoke('net:fetch', url, options),
+  },
+
   // Notifications
   notify: (title: string, body: string) => ipcRenderer.invoke('notify', title, body),
 
