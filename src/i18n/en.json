@@ -84,6 +84,7 @@
     "retry": "Try again"
   },
   "tabs": {
+    "fronters": "Fronters",
     "front": "Front",
     "members": "Members",
     "journal": "Journal",
@@ -194,7 +195,9 @@
     "searchHintKind": "Type a name or select a tag to find {{kind}}",
     "active": "Active",
     "archived": "Archived",
-    "noArchived": "No archived members."
+    "noArchived": "No archived members.",
+    "noArchivedFacets": "No archived facets.",
+    "noArchivedCustomFronts": "No archived custom fronts."
   },
   "history": {
     "title": "History",
@@ -559,6 +562,8 @@
     "emptyFolder": "Nothing here yet."
   },
   "terminology": {
+    "fronter": "Fronter",
+    "fronters": "Fronters",
     "title": "Terminology",
     "hint": "Rename what the app calls these. Your word replaces the default everywhere. Blank uses the default. In some languages only the base word forms are replaced.",
     "member": "Member",
@@ -754,6 +759,7 @@
   },
   "systemMap": {
     "showColors": "Colors",
+    "lockPositions": "Lock positions",
     "title": "System Map",
     "connections": "Connections",
     "showOnMap": "Show on Map",
@@ -820,6 +826,7 @@
     "allergies": "Allergies",
     "allergiesPlaceholder": "e.g. Penicillin",
     "bloodType": "Blood Type",
+    "bloodTypePlaceholder": "e.g. O+",
     "showOnNotification": "Show emergency info on the app notification",
     "emergencyDesc": "Critical info for first responders. When enabled, it's added to the persistent notification.",
     "deleteItemMsg": "Remove this entry?",

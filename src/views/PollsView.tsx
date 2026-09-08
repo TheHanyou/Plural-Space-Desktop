@@ -86,7 +86,11 @@ export default function PollsView({ onUpdate }: Props) {
         <span style={{ fontSize: 12, color: 'var(--dim)' }}>{t('polls.votingAs')}</span>
         <select style={{ background: 'var(--surface)', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: 8, padding: '6px 10px', fontSize: 12 }}
           aria-label={t('polls.votingAs')} value={voterId} onChange={e => setVoterId(e.target.value)}>
-          {activeMembers.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+          {activeMembers.length > 0 && (
+            <optgroup label={t('members.title')}>
+              {activeMembers.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+            </optgroup>
+          )}
           {activeFacets.length > 0 && (
             <optgroup label={t('members.facets')}>
               {activeFacets.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
@@ -171,7 +175,11 @@ export default function PollsView({ onUpdate }: Props) {
           <label className="field__label">{t('polls.forMember')}</label>
           <select style={{ width: '100%', background: 'var(--surface)', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: 8, padding: '9px 10px', fontSize: 13 }}
             aria-label={t('polls.forMember')} value={targetId} onChange={e => setTargetId(e.target.value)}>
-            {activeMembers.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+            {activeMembers.length > 0 && (
+              <optgroup label={t('members.title')}>
+                {activeMembers.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+              </optgroup>
+            )}
             {activeFacets.length > 0 && (
               <optgroup label={t('members.facets')}>
                 {activeFacets.map(m => <option key={m.id} value={m.id}>{m.name}</option>)}

@@ -84,6 +84,7 @@
     "retry": "Reyna aftur"
   },
   "tabs": {
+    "fronters": "Frontarar",
     "front": "Front",
     "members": "Meðlimir",
     "journal": "Dagbók",
@@ -194,7 +195,9 @@
     "searchHintKind": "Skrifaðu nafn eða veldu merki til að finna {{kind}}",
     "active": "Virkir",
     "archived": "Í safni",
-    "noArchived": "Engir meðlimir í safni."
+    "noArchived": "Engir meðlimir í safni.",
+    "noArchivedFacets": "Engar hliðar í safni.",
+    "noArchivedCustomFronts": "Engin sérsniðin front í safni."
   },
   "history": {
     "title": "Saga",
@@ -559,6 +562,8 @@
     "emptyFolder": "Hér er ekkert enn."
   },
   "terminology": {
+    "fronter": "Frontari",
+    "fronters": "Frontarar",
     "title": "Hugtakanotkun",
     "hint": "Endurnefndu það sem appið kallar þetta. Orðið þitt kemur í stað sjálfgefna orðsins alls staðar. Tómt notar sjálfgefið. Í sumum tungumálum er aðeins grunnmyndum skipt út.",
     "member": "Meðlimur",
@@ -754,6 +759,7 @@
   },
   "systemMap": {
     "showColors": "Litir",
+    "lockPositions": "Læsa staðsetningar",
     "title": "Kerfiskort",
     "connections": "Tengsl",
     "showOnMap": "Sýna á korti",
@@ -820,6 +826,7 @@
     "allergies": "Ofnæmi",
     "allergiesPlaceholder": "t.d. penisillín",
     "bloodType": "Blóðflokkur",
+    "bloodTypePlaceholder": "t.d. O+",
     "showOnNotification": "Sýna neyðarupplýsingar í tilkynningu forritsins",
     "emergencyDesc": "Mikilvægar upplýsingar fyrir viðbragðsaðila. Þegar kveikt er á þessu bætast þær við viðvarandi tilkynninguna.",
     "deleteItemMsg": "Fjarlægja þessa færslu?",

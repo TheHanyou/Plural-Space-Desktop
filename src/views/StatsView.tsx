@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { useTranslation } from 'react-i18next';
-import { HistoryEntry, ChatMessage, fmtDur, getInitials, translateMood, buildEffectiveEnd, SINGLET_HIDDEN_STATUS_NAMES } from '../utils';
+import { HistoryEntry, ChatMessage, fmtDur, fmtNum, getInitials, translateMood, buildEffectiveEnd, SINGLET_HIDDEN_STATUS_NAMES } from '../utils';
 import { Section } from '../components/ui';
 import { store, chatMsgKey, KEYS } from '../storage';
 import { useAppStore } from '../store/appStore';
@@ -333,7 +333,7 @@ export default function StatsView({ singlet = false, selfId }: Props) {
           <h3 style={{ fontSize: 13, fontFamily: 'var(--font-display)', color: 'var(--accent)', marginBottom: 10 }}>{t('energy.avgEnergy')}</h3>
           {energyStats.slice(0, 8).map(([id, avg]) => {
             const m = getMember(id);
-            return <Bar key={id} label={m?.name || '?'} value={avg} max={10} color={m?.color || 'var(--accent)'} suffix={`${avg}/10`} />;
+            return <Bar key={id} label={m?.name || '?'} value={avg} max={10} color={m?.color || 'var(--accent)'} suffix={`${fmtNum(avg, 1)}/10`} />;
           })}
         </div>
       )}
@@ -415,20 +415,39 @@ export default function StatsView({ singlet = false, selfId }: Props) {
                 <div><span style={{ fontSize: 20, fontWeight: 700, color: m?.color || 'var(--accent)' }}>{memberSpecific.sessions}</span><span style={{ fontSize: 11, color: 'var(--muted)', marginLeft: 4 }}>{t('stats.sessionsSuffix')}</span></div>
                 {memberSpecific.avgEnergy !== null && <div><span style={{ fontSize: 20, fontWeight: 700, color: m?.color || 'var(--accent)' }}>{memberSpecific.avgEnergy}</span><span style={{ fontSize: 11, color: 'var(--muted)', marginLeft: 4 }}>{t('energy.outOf10')}</span></div>}
               </div>
-              {memberSpecific.coMembers.length > 0 && (
-                <div style={{ marginBottom: 10 }}>
-                  <div style={{ fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>{singlet ? t('stats.coStatuses') : t('stats.topCoMembers')}</div>
-                  {memberSpecific.coMembers.slice(0, limitFor('coMembers')).map(([id, count]) => {
-                    const cm = getMember(id);
-                    return <Bar key={id} label={cm?.name || '?'} value={count} max={memberSpecific.coMembers[0]?.[1] || 1} color={cm?.color || 'var(--info)'} suffix={`${count}`} />;
-                  })}
-                  {memberSpecific.coMembers.length > limitFor('coMembers') && limitFor('coMembers') < MAX_BOARD && (
-                    <button onClick={() => expandBoard('coMembers')} style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: 12, fontWeight: 600, cursor: 'pointer', padding: '4px 0' }}>
-                      {t('stats.showMore', { defaultValue: 'Show more' })} ({Math.min(limitFor('coMembers'), memberSpecific.coMembers.length)}/{memberSpecific.coMembers.length})
-                    </button>
-                  )}
-                </div>
-              )}
+              {(() => {
+                const kindOf = (id: string): 'member' | 'facet' | 'customFront' => {
+                  const cm = getMember(id);
+                  if (cm?.isFacet) return 'facet';
+                  if (cm?.isCustomFront) return 'customFront';
+                  return 'member';
+                };
+                const groups: { key: string; label: string; all: [string, number][] }[] = singlet
+                  ? [{ key: 'coMembers', label: t('stats.coStatuses'), all: memberSpecific.coMembers }]
+                  : [
+                    { key: 'coMembers', label: t('stats.topCoMembers'), all: memberSpecific.coMembers.filter(([id]) => kindOf(id) === 'member') },
+                    { key: 'coFacets', label: t('members.facets'), all: memberSpecific.coMembers.filter(([id]) => kindOf(id) === 'facet') },
+                    { key: 'coCustomFronts', label: t('members.customFronts'), all: memberSpecific.coMembers.filter(([id]) => kindOf(id) === 'customFront') },
+                  ];
+                return groups.map(g => {
+                  if (g.all.length === 0) return null;
+                  const limit = limitFor(g.key);
+                  return (
+                    <div key={g.key} style={{ marginBottom: 10 }}>
+                      <div style={{ fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>{g.label}</div>
+                      {g.all.slice(0, limit).map(([id, count]) => {
+                        const cm = getMember(id);
+                        return <Bar key={id} label={cm?.name || '?'} value={count} max={g.all[0]?.[1] || 1} color={cm?.color || 'var(--info)'} suffix={`${count}`} />;
+                      })}
+                      {g.all.length > limit && limit < MAX_BOARD && (
+                        <button onClick={() => expandBoard(g.key)} style={{ background: 'none', border: 'none', color: 'var(--accent)', fontSize: 12, fontWeight: 600, cursor: 'pointer', padding: '4px 0' }}>
+                          {t('stats.showMore', { defaultValue: 'Show more' })} ({Math.min(limit, g.all.length)}/{g.all.length})
+                        </button>
+                      )}
+                    </div>
+                  );
+                });
+              })()}
               {memberSpecific.moods.length > 0 && (
                 <div>
                   <div style={{ fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: 0.5, marginBottom: 6 }}>{t('stats.topMoods')}</div>

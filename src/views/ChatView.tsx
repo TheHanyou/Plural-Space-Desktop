@@ -420,9 +420,11 @@ export default function ChatView({ onUpdate }: Props) {
                   </button>
                 );
                 const facets = members.filter(m => m.isFacet && match(m));
+                const roster = frontersFirst(members.filter(m => !m.isFacet && match(m)), front);
                 return (
                   <>
-                    {frontersFirst(members.filter(m => !m.isFacet && match(m)), front).map(row)}
+                    {roster.length > 0 && <div className="field__label" style={{ padding: '8px 8px 2px' }}>{t('members.title')}</div>}
+                    {roster.map(row)}
                     {facets.length > 0 && (
                       <>
                         <div className="field__label" style={{ padding: '8px 8px 2px' }}>{t('members.facets')}</div>

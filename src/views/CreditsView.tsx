@@ -44,12 +44,12 @@ export default function CreditsView() {
             cursor: 'pointer',
           }}
         >
-          <span style={{ fontSize: '22px', color: 'var(--color-accent)', marginRight: '14px' }}>✦</span>
+          <span aria-hidden style={{ fontSize: '22px', color: 'var(--color-accent)', marginRight: '14px' }}>✦</span>
           <div style={{ flex: 1 }}>
             <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--color-text)' }}>{c.name}</div>
             <div style={{ fontSize: '12px', color: 'var(--color-dim)', marginTop: '2px' }}>{c.role}</div>
           </div>
-          <span style={{ fontSize: '14px', color: 'var(--color-dim)', marginLeft: '8px' }}>↗</span>
+          <span aria-hidden style={{ fontSize: '14px', color: 'var(--color-dim)', marginLeft: '8px' }}>↗</span>
         </a>
       ))}
     </div>

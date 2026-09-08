@@ -38,6 +38,8 @@
     "sand": "Sand"
   },
   "terminology": {
+    "fronter": "Fronter",
+    "fronters": "Frontere",
     "title": "Terminologi",
     "hint": "Gi nytt navn til det appen kaller disse. Ordet ditt erstatter standardordet overalt. Tomt bruker standard. I noen språk erstattes bare grunnformene.",
     "member": "Medlem",
@@ -233,6 +235,7 @@
   },
   "systemMap": {
     "showColors": "Farger",
+    "lockPositions": "Lås posisjoner",
     "manageTypes": "Administrer typer",
     "connectionsCount": "{{count}} forbindelser",
     "allOnMap": "Alle medlemmer er allerede på kartet.",
@@ -299,6 +302,7 @@
     "allergies": "Allergier",
     "allergiesPlaceholder": "f.eks. Penicillin",
     "bloodType": "Blodtype",
+    "bloodTypePlaceholder": "f.eks. O+",
     "showOnNotification": "Vis nødinfo i appvarselet",
     "emergencyDesc": "Kritisk informasjon for førstehjelpere. Når aktivert, legges den til i det vedvarende varselet.",
     "deleteItemMsg": "Fjerne denne oppføringen?",
@@ -352,6 +356,7 @@
     "retry": "Prøv igjen"
   },
   "tabs": {
+    "fronters": "Frontere",
     "front": "Front",
     "members": "Medlemmer",
     "journal": "Dagbok",
@@ -462,7 +467,9 @@
     "searchHintKind": "Skriv et navn eller velg en tag for {{kind}}",
     "active": "Aktiv",
     "archived": "Arkivert",
-    "noArchived": "Ingen arkiverte medlemmer."
+    "noArchived": "Ingen arkiverte medlemmer.",
+    "noArchivedFacets": "Ingen arkiverte fasetter.",
+    "noArchivedCustomFronts": "Ingen arkiverte egendefinerte fronter."
   },
   "history": {
     "title": "Historikk",

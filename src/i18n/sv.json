@@ -84,6 +84,7 @@
     "retry": "Försök igen"
   },
   "tabs": {
+    "fronters": "Frontare",
     "front": "Front",
     "members": "Medlemmar",
     "journal": "Dagbok",
@@ -194,7 +195,9 @@
     "searchHintKind": "Skriv ett namn eller välj en tagg för att hitta {{kind}}",
     "active": "Aktiva",
     "archived": "Arkiverade",
-    "noArchived": "Inga arkiverade medlemmar."
+    "noArchived": "Inga arkiverade medlemmar.",
+    "noArchivedFacets": "Inga arkiverade fasetter.",
+    "noArchivedCustomFronts": "Inga arkiverade egna fronter."
   },
   "history": {
     "title": "Historik",
@@ -559,6 +562,8 @@
     "emptyFolder": "Inget här än."
   },
   "terminology": {
+    "fronter": "Frontare",
+    "fronters": "Frontare",
     "title": "Terminologi",
     "hint": "Byt namn på det appen kallar dessa. Ditt ord ersätter standardordet överallt. Tomt använder standard. I vissa språk ersätts bara grundformerna.",
     "member": "Medlem",
@@ -754,6 +759,7 @@
   },
   "systemMap": {
     "showColors": "Färger",
+    "lockPositions": "Lås positioner",
     "title": "Systemkarta",
     "connections": "Kopplingar",
     "showOnMap": "Visa på kartan",
@@ -820,6 +826,7 @@
     "allergies": "Allergier",
     "allergiesPlaceholder": "t.ex. penicillin",
     "bloodType": "Blodgrupp",
+    "bloodTypePlaceholder": "t.ex. O+",
     "showOnNotification": "Visa nödinformation i appens avisering",
     "emergencyDesc": "Kritisk information för räddningspersonal. När det är på läggs den till i den beständiga aviseringen.",
     "deleteItemMsg": "Ta bort den här posten?",

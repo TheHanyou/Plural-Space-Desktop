@@ -106,7 +106,7 @@ export default function MailboxView({ onUpdate }: Props) {
 
   const sendMessage = async () => {
     if (!composeTo || !composeFrom || !composeBody.trim()) return;
-    const targets = composeTo === ALL_RECIPIENTS ? activeMembers.map(m => m.id) : [composeTo];
+    const targets = composeTo === ALL_RECIPIENTS ? activeMembers.map(m => m.id).filter(id => id !== composeFrom) : [composeTo];
     if (targets.length === 0) return;
     const body = composeBody.trim();
     const now = Date.now();

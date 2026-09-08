@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import {
   MedicalData, Medication, MedicalAppointment, MedicalHistoryEntry, EmergencyInfo,
-  DEFAULT_MEDICAL, time12to24, formatTime12, uid, fmtTime,
+  DEFAULT_MEDICAL, time12to24, fmtClockHHMM, uses12HourClock, dayPeriodLabel, uid, fmtTime,
 } from '../utils';
 import { store, KEYS } from '../storage';
 import { Btn, Toggle, ConfirmDialog, clickable } from '../components/ui';
@@ -38,8 +38,19 @@ export default function MedicalView({ onUpdate }: Props) {
     onUpdate?.();
   };
 
+  const twelveHour = uses12HourClock();
+
+  const time24 = (raw: string): string | null => {
+    const m = /^(\d{1,2}):(\d{2})$/.exec((raw || '').trim());
+    if (!m) return null;
+    const h = parseInt(m[1], 10);
+    const min = parseInt(m[2], 10);
+    if (h < 0 || h > 23 || min < 0 || min > 59) return null;
+    return `${String(h).padStart(2, '0')}:${String(min).padStart(2, '0')}`;
+  };
+
   const addMedTime = () => {
-    const v = time12to24(medTime, medAmPm);
+    const v = twelveHour ? time12to24(medTime, medAmPm) : time24(medTime);
     if (!v) { setTimeErr(true); return; }
     if (!medTimes.includes(v)) setMedTimes([...medTimes, v].sort());
     setMedTime(''); setTimeErr(false);
@@ -91,7 +102,7 @@ export default function MedicalView({ onUpdate }: Props) {
             <input type="checkbox" checked={m.enabled} onChange={() => toggleMed(m.id)} aria-label={m.name} />
             <div style={{ flex: 1 }}>
               <div style={{ fontSize: 14, color: 'var(--text)', fontWeight: 500 }}>{m.name}{m.dosage ? ` · ${m.dosage}` : ''}</div>
-              {m.times.length > 0 && <div style={{ fontSize: 11, color: 'var(--muted)' }}>{m.times.map(formatTime12).join(', ')}</div>}
+              {m.times.length > 0 && <div style={{ fontSize: 11, color: 'var(--muted)' }}>{m.times.map(fmtClockHHMM).join(', ')}</div>}
             </div>
             <button onClick={() => setConfirmDel({ kind: 'med', id: m.id })} aria-label={`${t('common.delete')} ${m.name}`} style={{ background: 'none', border: 'none', color: 'var(--danger)', cursor: 'pointer' }}>✕</button>
           </div>
@@ -102,18 +113,20 @@ export default function MedicalView({ onUpdate }: Props) {
         </div>
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center', marginTop: 6 }}>
           <input className={`field__input ${timeErr ? 'field__input--error' : ''}`} value={medTime} onChange={e => { setMedTime(e.target.value); setTimeErr(false); }}
-            onKeyDown={e => { if (e.key === 'Enter') addMedTime(); }} aria-label={t('medical.timeHint')} placeholder="9:00" style={{ width: 70 }} />
-          <div style={{ display: 'flex', border: '1px solid var(--border)', borderRadius: 8, overflow: 'hidden' }}>
-            {(['AM', 'PM'] as const).map(ap => (
-              <button key={ap} onClick={() => setMedAmPm(ap)} aria-pressed={medAmPm === ap}
-                style={{ padding: '7px 10px', fontSize: 12, fontWeight: 600, border: 'none', cursor: 'pointer',
-                  background: medAmPm === ap ? 'var(--accent)' : 'transparent', color: medAmPm === ap ? '#0a0508' : 'var(--dim)' }}>{ap}</button>
-            ))}
-          </div>
+            onKeyDown={e => { if (e.key === 'Enter') addMedTime(); }} aria-label={t('medical.timeHint')} placeholder={twelveHour ? '9:00' : '14:00'} style={{ width: 70 }} />
+          {twelveHour && (
+            <div style={{ display: 'flex', border: '1px solid var(--border)', borderRadius: 8, overflow: 'hidden' }}>
+              {(['AM', 'PM'] as const).map(ap => (
+                <button key={ap} onClick={() => setMedAmPm(ap)} aria-pressed={medAmPm === ap}
+                  style={{ padding: '7px 10px', fontSize: 12, fontWeight: 600, border: 'none', cursor: 'pointer',
+                    background: medAmPm === ap ? 'var(--accent)' : 'transparent', color: medAmPm === ap ? '#0a0508' : 'var(--dim)' }}>{dayPeriodLabel(ap === 'PM')}</button>
+              ))}
+            </div>
+          )}
           <Btn variant="ghost" onClick={addMedTime}>{t('medical.addTime')}</Btn>
           {medTimes.map(tm => (
             <span key={tm} style={{ fontSize: 11, background: 'var(--surface)', color: 'var(--text)', padding: '2px 8px', borderRadius: 999, cursor: 'pointer' }}
-              {...clickable(() => setMedTimes(medTimes.filter(x => x !== tm)), `Remove ${formatTime12(tm)}`)}>{formatTime12(tm)} ✕</span>
+              {...clickable(() => setMedTimes(medTimes.filter(x => x !== tm)), `${t('common.remove')} ${fmtClockHHMM(tm)}`)}>{fmtClockHHMM(tm)} ✕</span>
           ))}
           <div style={{ flex: 1 }} />
           <Btn variant="solid" onClick={addMedication}>{t('medical.addMedication')}</Btn>
@@ -173,7 +186,7 @@ export default function MedicalView({ onUpdate }: Props) {
         <label className="field__label">{t('medical.allergies')}</label>
         <input className="field__input" value={data.emergency.allergies || ''} onChange={e => setEmergency({ allergies: e.target.value })} aria-label={t('medical.allergiesPlaceholder')} placeholder={t('medical.allergiesPlaceholder')} style={{ marginBottom: 10 }} />
         <label className="field__label">{t('medical.bloodType')}</label>
-        <input className="field__input" value={data.emergency.bloodType || ''} onChange={e => setEmergency({ bloodType: e.target.value })} aria-label={t('medical.bloodType')} placeholder="e.g. O+" style={{ marginBottom: 12 }} />
+        <input className="field__input" value={data.emergency.bloodType || ''} onChange={e => setEmergency({ bloodType: e.target.value })} aria-label={t('medical.bloodType')} placeholder={t('medical.bloodTypePlaceholder')} style={{ marginBottom: 12 }} />
         <Toggle label={t('medical.showOnNotification')} description={t('medical.emergencyDesc')}
           value={data.emergency.showOnNotification} onChange={v => setEmergency({ showOnNotification: v })} />
       </div>

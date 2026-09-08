@@ -38,6 +38,8 @@
     "sand": "沙色"
   },
   "terminology": {
+    "fronter": "前台者",
+    "fronters": "前台者",
     "title": "術語設定",
     "hint": "自訂應用程式中這些概念的稱呼。你的用詞將在所有位置取代預設用詞。留空則使用預設。部分語言僅取代基本形式。",
     "member": "成員",
@@ -257,6 +259,7 @@
     "retry": "再試一次"
   },
   "tabs": {
+    "fronters": "前台者",
     "front": "前台",
     "members": "成員",
     "journal": "日誌",
@@ -365,6 +368,8 @@
     "active": "使用中",
     "archived": "已封存",
     "noArchived": "沒有已封存的成員。",
+    "noArchivedFacets": "沒有已封存的側面。",
+    "noArchivedCustomFronts": "沒有已封存的自訂前台。",
     "selectedCount": "已選取 {{count}} 位",
     "clone": "複製",
     "cloneFields": "要複製哪些欄位？"
@@ -851,6 +856,7 @@
   },
   "systemMap": {
     "showColors": "顏色",
+    "lockPositions": "鎖定位置",
     "manageTypes": "管理類型",
     "connectionsCount": "{{count}} 條連結",
     "allOnMap": "所有成員都已在地圖上。",
@@ -917,6 +923,7 @@
     "allergies": "過敏",
     "allergiesPlaceholder": "例如 盤尼西林",
     "bloodType": "血型",
+    "bloodTypePlaceholder": "例如 O+",
     "showOnNotification": "在應用程式通知中顯示緊急資訊",
     "emergencyDesc": "供急救人員查看的關鍵資訊。啟用後會加入常駐通知，可從鎖定畫面查看。",
     "deleteItemMsg": "移除此記錄？",

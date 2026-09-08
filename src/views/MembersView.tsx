@@ -393,7 +393,7 @@ export default function MembersView({ onUpdate, archiveOnly = false, focusMember
 
       {filtered.length === 0 && (
         <div style={{ textAlign: 'center', padding: 40, color: 'var(--muted)', fontSize: 13 }}>
-          {search ? t('members.noMembers') : archiveOnly ? t('members.noArchived') : listView === 'customFronts' ? t('members.noCustomFronts') : listView === 'facets' ? t('members.noFacets') : t('members.noMembers')}
+          {search ? t('members.noMembers') : archiveOnly ? (listView === 'customFronts' ? t('members.noArchivedCustomFronts') : listView === 'facets' ? t('members.noArchivedFacets') : t('members.noArchived')) : listView === 'customFronts' ? t('members.noCustomFronts') : listView === 'facets' ? t('members.noFacets') : t('members.noMembers')}
         </div>
       )}
 
@@ -853,7 +853,11 @@ export default function MembersView({ onUpdate, archiveOnly = false, focusMember
                 <span style={{ fontSize: 12, color: 'var(--dim)' }}>{t('noteboard.writingAs')}</span>
                 <select style={{ background: 'var(--bg)', color: 'var(--text)', border: '1px solid var(--border)', borderRadius: 8, padding: '5px 10px', fontSize: 12 }}
                   aria-label={t('noteboard.writingAs')} value={noteAuthorId || ''} onChange={e => setNoteAuthorId(e.target.value)}>
-                  {members.filter(m => !m.archived && !m.isFacet).map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+                  {members.some(m => !m.archived && !m.isFacet) && (
+                    <optgroup label={t('members.title')}>
+                      {members.filter(m => !m.archived && !m.isFacet).map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+                    </optgroup>
+                  )}
                   {members.some(m => !m.archived && m.isFacet) && (
                     <optgroup label={t('members.facets')}>
                       {members.filter(m => !m.archived && m.isFacet).map(m => <option key={m.id} value={m.id}>{m.name}</option>)}

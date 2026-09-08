@@ -273,9 +273,10 @@ export default function SystemManagerView({ onUpdate, onViewMember, onQuickFront
                 style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: 8, background: 'none', border: 'none', borderBottom: '1px solid var(--border)', cursor: 'pointer', textAlign: 'left' }}>
                 <span style={{ fontSize: 14 }}>{groupKind(g) === 'subsystem' ? '⊟' : '📁'}</span>
                 <span style={{ flex: 1, fontSize: 13, color: 'var(--text)' }}>{g.name}</span>
-                <span style={{ fontSize: 11, color: 'var(--muted)' }}>›</span>
+                <span aria-hidden style={{ fontSize: 11, color: 'var(--muted)' }}>›</span>
               </button>
             ))}
+            {folderMembers.length > 0 && <label className="field__label" style={{ marginTop: 10 }}>{t('members.title')}</label>}
             {folderMembers.map(m => removeMode ? (
               <button key={m.id} onClick={() => toggleRemovePick(m.id)} role="checkbox" aria-checked={removeIds.includes(m.id)} aria-label={m.name}
                 style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: 8, background: 'none', border: 'none', borderBottom: '1px solid var(--border)', cursor: 'pointer', textAlign: 'left' }}>
@@ -357,6 +358,7 @@ export default function SystemManagerView({ onUpdate, onViewMember, onQuickFront
               }>
               <input className="field__input" value={addSearch} onChange={e => setAddSearch(e.target.value)} placeholder={t('common.search')} aria-label={t('common.search')} style={{ marginBottom: 10, width: '100%' }} />
               <div style={{ maxHeight: 320, overflowY: 'auto' }}>
+                {addCandidates.length > 0 && <label className="field__label">{t('members.title')}</label>}
                 {addCandidates.map(m => (
                   <button key={m.id} onClick={() => toggleAddPick(m.id)} role="checkbox" aria-checked={addPickIds.includes(m.id)} aria-label={m.name}
                     style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: 8, background: 'none', border: 'none', borderBottom: '1px solid var(--border)', cursor: 'pointer', textAlign: 'left' }}>

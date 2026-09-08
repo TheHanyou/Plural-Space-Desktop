@@ -38,6 +38,7 @@ export default function SystemMapView({ onViewMember, focusMemberId }: Props) {
   const [showArchived, setShowArchived] = useState(() => localStorage.getItem('ps.mapShowArchived') === '1');
   const [showFacets, setShowFacets] = useState(() => localStorage.getItem('ps.mapShowFacets') !== '0');
   const [colorAll, setColorAll] = useState(() => localStorage.getItem('ps.mapColorThreads') === '1');
+  const [lockPositions, setLockPositions] = useState(() => localStorage.getItem('ps.mapLockPositions') === '1');
   const [relEditor, setRelEditor] = useState<{ from: string; toIds: string[]; typeId: string; note: string } | null>(null);
   const [relDup, setRelDup] = useState(false);
   useEffect(() => { setRelDup(false); }, [relEditor]);
@@ -89,7 +90,8 @@ export default function SystemMapView({ onViewMember, focusMemberId }: Props) {
 
   const mapMembers = useMemo(() => (mapIds.map(id => memberById.get(id)).filter(Boolean) as Member[]).filter(m => (showArchived || !m.archived) && (showFacets || !m.isFacet)), [mapIds, memberById, showArchived, showFacets]);
   const mapIdSet = useMemo(() => new Set(mapIds), [mapIds]);
-  const mapRels = useMemo(() => relationships.filter(r => mapIdSet.has(r.fromId) && mapIdSet.has(r.toId)), [relationships, mapIdSet]);
+  const visibleIdSet = useMemo(() => new Set(mapMembers.map(m => m.id)), [mapMembers]);
+  const mapRels = useMemo(() => relationships.filter(r => visibleIdSet.has(r.fromId) && visibleIdSet.has(r.toId)), [relationships, visibleIdSet]);
 
   const typeLabel = (td: RelationshipTypeDef): string => (td.preset && !td.overridden) ? t(`relType.${td.id}`, { defaultValue: td.name }) : td.name;
 
@@ -147,7 +149,7 @@ export default function SystemMapView({ onViewMember, focusMemberId }: Props) {
     return r.width > 0 ? (extX * 2) / r.width : 1;
   };
   const onNodePointerDown = (id: string, p: { x: number; y: number }) => (e: React.PointerEvent) => {
-    if (e.button !== 0) return;
+    if (e.button !== 0 || lockPositions) return;
     (e.target as Element).setPointerCapture?.(e.pointerId);
     dragRef.current = { id, pointerId: e.pointerId, startX: e.clientX, startY: e.clientY, origX: p.x, origY: p.y, moved: false };
   };
@@ -225,7 +227,7 @@ export default function SystemMapView({ onViewMember, focusMemberId }: Props) {
     <div style={{ maxWidth: 980, margin: '0 auto' }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, flexWrap: 'wrap' }}>
         <h2 style={{ fontSize: 18, fontFamily: 'var(--font-display)', color: 'var(--text)', margin: 0 }}>{t('systemMap.title')}</h2>
-        <span style={{ fontSize: 12, color: 'var(--muted)' }}>{relationships.length === 1 ? t('systemMap.relationshipOne') : t('systemMap.relationships', { count: relationships.length })}</span>
+        <span style={{ fontSize: 12, color: 'var(--muted)' }}>{mapRels.length === 1 ? t('systemMap.relationshipOne') : t('systemMap.relationships', { count: mapRels.length })}</span>
         <div style={{ flex: 1 }} />
         <Btn variant="solid" onClick={() => setShowAddMember(true)}>{t('systemMap.addMember')}</Btn>
         <Btn variant="ghost" onClick={() => setRelEditor({ from: selectedId || mapIds[0] || '', toIds: [], typeId: types[0]?.id || 'friend', note: '' })}>{t('systemMap.addRelationship')}</Btn>
@@ -247,6 +249,12 @@ export default function SystemMapView({ onViewMember, focusMemberId }: Props) {
           aria-pressed={colorAll}
           onClick={() => { const v = !colorAll; setColorAll(v); localStorage.setItem('ps.mapColorThreads', v ? '1' : '0'); }}>
           {t('systemMap.showColors', {defaultValue: 'Colors'})}
+        </button>
+        <button
+          className={lockPositions ? 'btn btn--solid' : 'btn btn--ghost'}
+          aria-pressed={lockPositions}
+          onClick={() => { const v = !lockPositions; setLockPositions(v); localStorage.setItem('ps.mapLockPositions', v ? '1' : '0'); }}>
+          <span aria-hidden>{lockPositions ? '🔒 ' : '🔓 '}</span>{t('systemMap.lockPositions')}
         </button>
       </div>
 
@@ -329,6 +337,7 @@ export default function SystemMapView({ onViewMember, focusMemberId }: Props) {
       <Modal open={showAddMember} title={t('systemMap.addMember')} onClose={() => setShowAddMember(false)}>
         {off.length === 0 && offFacets.length === 0 ? <p style={{ color: 'var(--muted)', fontSize: 13 }}>{t('systemMap.allOnMap')}</p> : (
           <>
+            {off.length > 0 && <label className="field__label">{t('members.title')}</label>}
             {off.map(m => (
               <button key={m.id} onClick={() => { saveMapIds([...mapIds, m.id]); setShowAddMember(false); }}
                 style={{ display: 'flex', alignItems: 'center', gap: 8, width: '100%', padding: 8, background: 'none', border: 'none', borderBottom: '1px solid var(--border)', cursor: 'pointer', textAlign: 'left' }}>
@@ -362,6 +371,7 @@ export default function SystemMapView({ onViewMember, focusMemberId }: Props) {
             </div>
             <div>
               <label className="field__label">{t('systemMap.to')}</label>
+              <div className="field__label" style={{ marginTop: 4 }}>{t('members.title')}</div>
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
                 {[...mapIds, ...off.map(m => m.id)].filter(id => id !== relEditor.from).map(id => {
                   const m = memberById.get(id);
@@ -428,7 +438,7 @@ export default function SystemMapView({ onViewMember, focusMemberId }: Props) {
               <label className="field__label">{t('systemMap.typeName')}</label>
               <input className="field__input" aria-label={t('systemMap.typeName')} value={typeDraft.name} onChange={e => setTypeDraft({ ...typeDraft, name: e.target.value })} />
             </div>
-            <ColorCarousel value={typeDraft.color} onChange={v => setTypeDraft({ ...typeDraft, color: v })} />
+            <ColorCarousel value={typeDraft.color} onChange={v => setTypeDraft(d => (d ? { ...d, color: v } : d))} />
             {typeDraft.preset && <p style={{ fontSize: 11, color: 'var(--muted)' }}>{t('systemMap.presetEditNote')}</p>}
           </div>
         )}

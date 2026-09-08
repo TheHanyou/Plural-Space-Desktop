@@ -38,6 +38,8 @@
     "sand": "Sand"
   },
   "terminology": {
+    "fronter": "Fronter",
+    "fronters": "Fronter",
     "title": "Terminologie",
     "hint": "Benenne um, wie die App diese Begriffe nennt. Dein Wort ersetzt überall das Standardwort. Leer = Standard. In manchen Sprachen werden nur die Grundformen ersetzt.",
     "member": "Mitglied",
@@ -233,6 +235,7 @@
   },
   "systemMap": {
     "showColors": "Farben",
+    "lockPositions": "Positionen sperren",
     "manageTypes": "Typen verwalten",
     "connectionsCount": "{{count}} Verbindungen",
     "allOnMap": "Alle Mitglieder sind bereits auf der Karte.",
@@ -299,6 +302,7 @@
     "allergies": "Allergien",
     "allergiesPlaceholder": "z. B. Penicillin",
     "bloodType": "Blutgruppe",
+    "bloodTypePlaceholder": "z. B. O+",
     "showOnNotification": "Notfallinfos in der App-Benachrichtigung anzeigen",
     "emergencyDesc": "Wichtige Informationen für Ersthelfer. Wenn aktiviert, werden sie der dauerhaften Benachrichtigung hinzugefügt.",
     "deleteItemMsg": "Diesen Eintrag entfernen?",
@@ -352,6 +356,7 @@
     "retry": "Erneut versuchen"
   },
   "tabs": {
+    "fronters": "Fronter",
     "front": "Front",
     "members": "Mitglieder",
     "journal": "Tagebuch",
@@ -462,7 +467,9 @@
     "searchHintKind": "Tippe einen Namen oder wähle einen Tag für {{kind}}",
     "active": "Aktiv",
     "archived": "Archiviert",
-    "noArchived": "Keine archivierten Mitglieder."
+    "noArchived": "Keine archivierten Mitglieder.",
+    "noArchivedFacets": "Keine archivierten Facetten.",
+    "noArchivedCustomFronts": "Keine archivierten benutzerdefinierten Fronten."
   },
   "history": {
     "title": "Verlauf",

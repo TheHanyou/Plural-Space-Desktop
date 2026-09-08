@@ -213,7 +213,11 @@ export default function JournalView({ onUpdate }: Props) {
             border: '1px solid var(--border)', borderRadius: 8, padding: '9px 12px', fontSize: 13,
           }} aria-label={t('common.filterByAuthor')} value={authorFilter} onChange={e => setAuthorFilter(e.target.value)}>
             <option value="">{t('common.allAuthors')}</option>
-            {members.filter(m => !m.archived && !m.isFacet).map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+            {members.some(m => !m.archived && !m.isFacet) && (
+              <optgroup label={t('members.title')}>
+                {members.filter(m => !m.archived && !m.isFacet).map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
+              </optgroup>
+            )}
             {members.some(m => !m.archived && m.isFacet) && (
               <optgroup label={t('members.facets')}>
                 {members.filter(m => !m.archived && m.isFacet).map(m => <option key={m.id} value={m.id}>{m.name}</option>)}
@@ -376,6 +380,7 @@ export default function JournalView({ onUpdate }: Props) {
         <Section label={t('modal.authors')} />
         <input className="field__input" value={authorSearch} onChange={e => setAuthorSearch(e.target.value)}
           aria-label={t('members.search')} placeholder={t('members.search')} style={{ marginBottom: 8 }} />
+        {filteredAuthors.length > 0 && <label className="field__label">{t('members.title')}</label>}
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: filteredFacetAuthors.length > 0 ? 8 : 14 }}>
           {filteredAuthors.slice(0, 12).map(m => {
             const active = authorIds.includes(m.id);

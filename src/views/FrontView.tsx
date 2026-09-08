@@ -483,7 +483,8 @@ export function SetFrontModal({ open, onClose, onSave, members, groups, current,
           <span className="section-div__line" />
         </div>
 
-        {renderPool(regularPool, search[tierKey], v => setSearch({ ...search, [tierKey]: v }), true)}
+        <label className="field__label">{t('members.title')}</label>
+        {renderPool(regularPool, search[tierKey], v => setSearch({ ...search, [tierKey]: v }), true, t('members.title'))}
 
         <label className="field__label">{t('members.facets')}</label>
         {renderPool(facetPool, searchFacet[tierKey], v => setSearchFacet({ ...searchFacet, [tierKey]: v }), false, t('members.facets'))}

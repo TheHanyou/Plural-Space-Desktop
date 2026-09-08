@@ -84,6 +84,7 @@
     "retry": "Opnieuw proberen"
   },
   "tabs": {
+    "fronters": "Fronters",
     "front": "Front",
     "members": "Leden",
     "journal": "Dagboek",
@@ -194,7 +195,9 @@
     "searchHintKind": "Typ een naam of kies een tag om {{kind}} te vinden",
     "active": "Actief",
     "archived": "Gearchiveerd",
-    "noArchived": "Geen gearchiveerde leden."
+    "noArchived": "Geen gearchiveerde leden.",
+    "noArchivedFacets": "Geen gearchiveerde facetten.",
+    "noArchivedCustomFronts": "Geen gearchiveerde aangepaste fronts."
   },
   "history": {
     "title": "Geschiedenis",
@@ -559,6 +562,8 @@
     "emptyFolder": "Hier is nog niets."
   },
   "terminology": {
+    "fronter": "Fronter",
+    "fronters": "Fronters",
     "title": "Terminologie",
     "hint": "Hernoem hoe de app deze begrippen noemt. Jouw woord vervangt overal het standaardwoord. Leeg gebruikt de standaard. In sommige talen worden alleen de basisvormen vervangen.",
     "member": "Lid",
@@ -754,6 +759,7 @@
   },
   "systemMap": {
     "showColors": "Kleuren",
+    "lockPositions": "Posities vergrendelen",
     "title": "Systeemkaart",
     "connections": "Verbindingen",
     "showOnMap": "Op kaart tonen",
@@ -820,6 +826,7 @@
     "allergies": "Allergieën",
     "allergiesPlaceholder": "bijv. penicilline",
     "bloodType": "Bloedgroep",
+    "bloodTypePlaceholder": "bijv. O+",
     "showOnNotification": "Noodinfo tonen op de app-melding",
     "emergencyDesc": "Kritieke info voor hulpverleners. Indien ingeschakeld wordt dit toegevoegd aan de permanente melding.",
     "deleteItemMsg": "Dit item verwijderen?",

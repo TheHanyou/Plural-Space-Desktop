@@ -13,7 +13,7 @@ export default function MembersTile({ onClick }: Props) {
   const preview = active.slice(0, 5);
   return (
     <div className="tile" role="button" tabIndex={0} onClick={onClick} onKeyDown={e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onClick?.(); } }}>
-      <div className="tile__header"><div className="tile__glyph" aria-hidden>👥</div><span className="tile__title">{t('members.title')}</span></div>
+      <div className="tile__header"><div className="tile__glyph" aria-hidden>👥</div><span className="tile__title">{t('tabs.fronters')}</span></div>
       <div className="tile__body">
         {active.length === 0 ? <span className="tile__empty">{t('members.noMembers')}</span> : (<>
           {preview.map(m => (

@@ -38,6 +38,8 @@
     "sand": "Sabbia"
   },
   "terminology": {
+    "fronter": "Fronter",
+    "fronters": "Fronter",
     "title": "Terminologia",
     "hint": "Rinomina come l'app chiama questi concetti. La tua parola sostituisce quella predefinita ovunque. Vuoto usa la predefinita. In alcune lingue vengono sostituite solo le forme base.",
     "member": "Membro",
@@ -258,6 +260,7 @@
     "retry": "Riprova"
   },
   "tabs": {
+    "fronters": "Fronter",
     "front": "Front",
     "members": "Membri",
     "journal": "Diario",
@@ -368,6 +371,8 @@
     "active": "Attivi",
     "archived": "Archiviati",
     "noArchived": "Nessun membro archiviato.",
+    "noArchivedFacets": "Nessuna sfaccettatura archiviata.",
+    "noArchivedCustomFronts": "Nessun front personalizzato archiviato.",
     "selectedCount": "{{count}} selezionati"
   },
   "history": {
@@ -852,6 +857,7 @@
   },
   "systemMap": {
     "showColors": "Colori",
+    "lockPositions": "Blocca posizioni",
     "manageTypes": "Gestisci tipi",
     "connectionsCount": "{{count}} connessioni",
     "allOnMap": "Tutti i membri sono già sulla mappa.",
@@ -918,6 +924,7 @@
     "allergies": "Allergie",
     "allergiesPlaceholder": "es. Penicillina",
     "bloodType": "Gruppo sanguigno",
+    "bloodTypePlaceholder": "es. O+",
     "showOnNotification": "Mostra le info di emergenza nella notifica dell'app",
     "emergencyDesc": "Informazioni critiche per i soccorritori. Quando attivato, vengono aggiunte alla notifica persistente, visibili dalla schermata di blocco.",
     "deleteItemMsg": "Rimuovere questa voce?",

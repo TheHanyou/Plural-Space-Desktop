@@ -185,7 +185,7 @@ export default function ProfileView({ member, statuses, onUpdate, onEnsureSelf }
                         {t('profile.activeStatus')}
                       </span>
                     )}
-                    <span style={{ fontSize: 12, color: 'var(--muted)' }}>›</span>
+                    <span aria-hidden style={{ fontSize: 12, color: 'var(--muted)' }}>›</span>
                   </button>
                 );
               })}

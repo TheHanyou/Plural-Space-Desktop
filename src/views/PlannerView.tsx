@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Btn, Field, Modal, ConfirmDialog, Toggle, Section, AddRow, useEscapeKey } from '../components/ui';
+import { Btn, Field, ConfirmDialog, Toggle, Section, AddRow, useEscapeKey } from '../components/ui';
 import { store, KEYS } from '../storage';
 import { PlannerData, PlannerAppointment, PlannerReminder, PlannerRepeat, PlannerReminderRepeat, DEFAULT_PLANNER, plannerOccursOnDay, uid, isValidTimeHHMM, getLocale } from '../utils';
 import { NetworkManager } from '../network/NetworkManager';
@@ -51,6 +51,8 @@ export default function PlannerView({ onUpdate }: Props) {
   const { t } = useTranslation();
   const locale = getLocale();
   const [planner, setPlannerState] = useState<PlannerData>(DEFAULT_PLANNER);
+  const plannerRef = useRef(planner);
+  plannerRef.current = planner;
   const today = new Date();
   const [viewMonth, setViewMonth] = useState<Date>(new Date(today.getFullYear(), today.getMonth(), 1));
   const [selected, setSelected] = useState<Date>(today);
@@ -220,8 +222,104 @@ export default function PlannerView({ onUpdate }: Props) {
     </div>
   );
 
+  const formHeader = (title: string, onClose: () => void) => (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 14 }}>
+      <button className="icon-btn" aria-label={t('common.back')} onClick={onClose}
+        style={{ background: 'none', border: 'none', color: 'var(--dim)', fontSize: 18, cursor: 'pointer', padding: 4 }}>←</button>
+      <h2 style={{ flex: 1, fontSize: 18, fontWeight: 600, color: 'var(--text)', margin: 0 }}>{title}</h2>
+    </div>
+  );
+
+  if (apptOpen) {
+    return (
+      <div style={{ maxWidth: 720, margin: '0 auto', paddingBottom: 32 }}>
+        {formHeader(apptId ? t('planner.editAppt') : t('planner.addAppt'), () => setApptOpen(false))}
+        <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 12, padding: 16 }}>
+          <Field label={t('planner.apptTitlePlaceholder')} value={apptTitle} onChange={setApptTitle} placeholder={t('planner.apptTitlePlaceholder')} />
+          <label style={{ display: 'block', fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: 0.5, margin: '10px 0 4px' }}>
+            {t('planner.when')}
+            <input className="field__input" aria-label={t('planner.when')} type="datetime-local" value={apptWhen} onChange={e => setApptWhen(e.target.value)} style={{ display: 'block', marginTop: 6, width: 220 }} />
+          </label>
+          <Field label={t('planner.locationPlaceholder')} value={apptLocation} onChange={setApptLocation} placeholder={t('planner.locationPlaceholder')} />
+          <Field label={t('planner.notesPlaceholder')} value={apptNotes} onChange={setApptNotes} placeholder={t('planner.notesPlaceholder')} multiline />
+          <Section label={t('planner.repeatLabel')} />
+          {repeatChips(APPT_REPEAT_CHOICES, apptRepeat, setApptRepeat)}
+          <Section label={t('planner.remindLabel')} />
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+            {REMIND_CHOICES.map(c => {
+              const sel = apptRemind === c.minutes;
+              return (
+                <button key={String(c.minutes)} onClick={() => setApptRemind(c.minutes)} aria-pressed={sel}
+                  style={{ padding: '5px 10px', borderRadius: 999, fontSize: 11, cursor: 'pointer',
+                    background: sel ? 'color-mix(in srgb, var(--accent) 20%, transparent)' : 'var(--bg)',
+                    border: `1px solid ${sel ? 'var(--accent)' : 'var(--border)'}`,
+                    color: sel ? 'var(--accent)' : 'var(--dim)' }}>
+                  {t(c.key)}
+                </button>
+              );
+            })}
+          </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12, marginBottom: 6 }}>
+            <span aria-hidden style={{ width: 10, height: 10, borderRadius: 5, background: apptColor || markColor, display: 'inline-block' }} />
+            <span style={{ flex: 1, fontSize: 11, color: 'var(--dim)' }}>{t('planner.apptColor')}</span>
+            {apptColor && (
+              <button onClick={() => setApptColor(null)}
+                style={{ padding: '3px 10px', borderRadius: 999, fontSize: 11, cursor: 'pointer', background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--dim)' }}>
+                {t('planner.apptColorDefault')}
+              </button>
+            )}
+          </div>
+          <ColorCarousel value={apptColor || markColor} onChange={setApptColor} size={22} />
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 16 }}>
+            <Btn variant="ghost" onClick={() => setApptOpen(false)}>{t('common.cancel')}</Btn>
+            <Btn onClick={saveAppt} disabled={!apptTitle.trim() || isNaN(new Date(apptWhen).getTime())}>{t('common.save')}</Btn>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (remOpen) {
+    return (
+      <div style={{ maxWidth: 720, margin: '0 auto', paddingBottom: 32 }}>
+        {formHeader(remId ? t('planner.editReminder') : t('planner.addReminder'), () => setRemOpen(false))}
+        <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 12, padding: 16 }}>
+          <Field label={t('planner.reminderTitlePlaceholder')} value={remTitle} onChange={setRemTitle} placeholder={t('planner.reminderTitlePlaceholder')} />
+          <Section label={t('planner.timesLabel')} />
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
+            {remTimes.map(tm => (
+              <button key={tm} onClick={() => setRemTimes(remTimes.filter(x => x !== tm))} aria-label={t('planner.removeTime', { time: tm })}
+                style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '5px 10px', borderRadius: 999, fontSize: 12, cursor: 'pointer',
+                  background: 'color-mix(in srgb, var(--accent) 15%, transparent)', border: '1px solid var(--accent)', color: 'var(--accent)' }}>
+                {tm} <span aria-hidden style={{ color: 'var(--dim)', fontSize: 11 }}>✕</span>
+              </button>
+            ))}
+          </div>
+          <AddRow value={remNewTime} onChange={setRemNewTime} onAdd={addRemTime} placeholder="08:00" label={t('planner.addTime')} />
+          <Section label={t('planner.repeatLabel')} />
+          {repeatChips(REM_REPEAT_CHOICES, remRepeat, setRemRepeat)}
+          {remRepeat !== 'daily' && (
+            <label style={{ display: 'block', fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: 0.5, margin: '10px 0 4px' }}>
+              {remRepeat === 'once' ? t('planner.onDateLabel') : t('planner.startingLabel')}
+              <input className="field__input" aria-label={remRepeat === 'once' ? t('planner.onDateLabel') : t('planner.startingLabel')} type="date" value={remStart} onChange={e => setRemStart(e.target.value)} style={{ display: 'block', marginTop: 6, width: 180 }} />
+            </label>
+          )}
+          <Field label={t('planner.notesPlaceholder')} value={remNotes} onChange={setRemNotes} placeholder={t('planner.notesPlaceholder')} multiline />
+          <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 16 }}>
+            <Btn variant="ghost" onClick={() => setRemOpen(false)}>{t('common.cancel')}</Btn>
+            <Btn onClick={saveRem} disabled={!remTitle.trim() || remTimes.length === 0}>{t('common.save')}</Btn>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div style={{ maxWidth: 720, margin: '0 auto', paddingBottom: 32 }}>
+      <div style={{ display: 'flex', gap: 10, marginBottom: 12 }}>
+        <Btn onClick={openNewAppt} style={{ flex: 1 }} aria-label={t('planner.addAppt')}>+ {t('planner.appt')}</Btn>
+        <Btn onClick={openNewRem} style={{ flex: 1 }} aria-label={t('planner.addReminder')}>+ {t('planner.reminder')}</Btn>
+      </div>
       <div style={{ background: 'var(--card)', border: '1px solid var(--border)', borderRadius: 12, padding: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', marginBottom: 8 }}>
           <button className="icon-btn" aria-label={t('planner.prevMonth')} onClick={() => setViewMonth(m => new Date(m.getFullYear(), m.getMonth() - 1, 1))}
@@ -268,14 +366,13 @@ export default function PlannerView({ onUpdate }: Props) {
         </button>
         {markPickerOpen && (
           <div style={{ marginTop: 8 }}>
-            <ColorCarousel value={markColor} onChange={hex => save({ ...planner, markColor: hex })} size={22} />
+            <ColorCarousel value={markColor} onChange={hex => save({ ...plannerRef.current, markColor: hex })} size={22} />
           </div>
         )}
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', margin: '16px 0 8px' }}>
         <h3 aria-live="polite" style={{ flex: 1, fontSize: 15, fontWeight: 600, color: 'var(--text)', margin: 0 }}>{selectedLabel}</h3>
-        <Btn onClick={openNewAppt}>+ {t('planner.appt')}</Btn>
       </div>
       {dayAppts.length === 0 ? (
         <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 8 }}>{t('planner.emptyDay')}</div>
@@ -308,7 +405,6 @@ export default function PlannerView({ onUpdate }: Props) {
 
       <div style={{ display: 'flex', alignItems: 'center', margin: '16px 0 8px' }}>
         <h3 style={{ flex: 1, fontSize: 15, fontWeight: 600, color: 'var(--text)', margin: 0 }}>{t('planner.reminders')}</h3>
-        <Btn onClick={openNewRem}>+ {t('planner.reminder')}</Btn>
       </div>
       {sortedRems.length === 0 ? (
         <div style={{ fontSize: 12, color: 'var(--muted)' }}>{t('planner.emptyReminders')}</div>
@@ -325,80 +421,6 @@ export default function PlannerView({ onUpdate }: Props) {
             style={{ background: 'none', border: 'none', color: 'var(--muted)', fontSize: 15, cursor: 'pointer', padding: 8 }}>✕</button>
         </div>
       ))}
-
-      <Modal open={apptOpen} title={apptId ? t('planner.editAppt') : t('planner.addAppt')} onClose={() => setApptOpen(false)}
-        footer={
-          <div style={{ display: 'flex', gap: 8, width: '100%', justifyContent: 'flex-end' }}>
-            <Btn variant="ghost" onClick={() => setApptOpen(false)}>{t('common.cancel')}</Btn>
-            <Btn onClick={saveAppt} disabled={!apptTitle.trim() || isNaN(new Date(apptWhen).getTime())}>{t('common.save')}</Btn>
-          </div>
-        }>
-        <Field label={t('planner.apptTitlePlaceholder')} value={apptTitle} onChange={setApptTitle} placeholder={t('planner.apptTitlePlaceholder')} />
-        <label style={{ display: 'block', fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: 0.5, margin: '10px 0 4px' }}>
-          {t('planner.when')}
-          <input className="field__input" aria-label={t('planner.when')} type="datetime-local" value={apptWhen} onChange={e => setApptWhen(e.target.value)} style={{ display: 'block', marginTop: 6, width: 220 }} />
-        </label>
-        <Field label={t('planner.locationPlaceholder')} value={apptLocation} onChange={setApptLocation} placeholder={t('planner.locationPlaceholder')} />
-        <Field label={t('planner.notesPlaceholder')} value={apptNotes} onChange={setApptNotes} placeholder={t('planner.notesPlaceholder')} multiline />
-        <Section label={t('planner.repeatLabel')} />
-        {repeatChips(APPT_REPEAT_CHOICES, apptRepeat, setApptRepeat)}
-        <Section label={t('planner.remindLabel')} />
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
-          {REMIND_CHOICES.map(c => {
-            const sel = apptRemind === c.minutes;
-            return (
-              <button key={String(c.minutes)} onClick={() => setApptRemind(c.minutes)} aria-pressed={sel}
-                style={{ padding: '5px 10px', borderRadius: 999, fontSize: 11, cursor: 'pointer',
-                  background: sel ? 'color-mix(in srgb, var(--accent) 20%, transparent)' : 'var(--bg)',
-                  border: `1px solid ${sel ? 'var(--accent)' : 'var(--border)'}`,
-                  color: sel ? 'var(--accent)' : 'var(--dim)' }}>
-                {t(c.key)}
-              </button>
-            );
-          })}
-        </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginTop: 12, marginBottom: 6 }}>
-          <span aria-hidden style={{ width: 10, height: 10, borderRadius: 5, background: apptColor || markColor, display: 'inline-block' }} />
-          <span style={{ flex: 1, fontSize: 11, color: 'var(--dim)' }}>{t('planner.apptColor')}</span>
-          {apptColor && (
-            <button onClick={() => setApptColor(null)}
-              style={{ padding: '3px 10px', borderRadius: 999, fontSize: 11, cursor: 'pointer', background: 'var(--bg)', border: '1px solid var(--border)', color: 'var(--dim)' }}>
-              {t('planner.apptColorDefault')}
-            </button>
-          )}
-        </div>
-        <ColorCarousel value={apptColor || markColor} onChange={setApptColor} size={22} />
-      </Modal>
-
-      <Modal open={remOpen} title={remId ? t('planner.editReminder') : t('planner.addReminder')} onClose={() => setRemOpen(false)}
-        footer={
-          <div style={{ display: 'flex', gap: 8, width: '100%', justifyContent: 'flex-end' }}>
-            <Btn variant="ghost" onClick={() => setRemOpen(false)}>{t('common.cancel')}</Btn>
-            <Btn onClick={saveRem} disabled={!remTitle.trim() || remTimes.length === 0}>{t('common.save')}</Btn>
-          </div>
-        }>
-        <Field label={t('planner.reminderTitlePlaceholder')} value={remTitle} onChange={setRemTitle} placeholder={t('planner.reminderTitlePlaceholder')} />
-        <Section label={t('planner.timesLabel')} />
-        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 8 }}>
-          {remTimes.map(tm => (
-            <button key={tm} onClick={() => setRemTimes(remTimes.filter(x => x !== tm))} aria-label={t('planner.removeTime', { time: tm })}
-              style={{ display: 'flex', alignItems: 'center', gap: 4, padding: '5px 10px', borderRadius: 999, fontSize: 12, cursor: 'pointer',
-                background: 'color-mix(in srgb, var(--accent) 15%, transparent)', border: '1px solid var(--accent)', color: 'var(--accent)' }}>
-              {tm} <span aria-hidden style={{ color: 'var(--dim)', fontSize: 11 }}>✕</span>
-            </button>
-          ))}
-        </div>
-        <AddRow value={remNewTime} onChange={setRemNewTime} onAdd={addRemTime} placeholder="08:00" label={t('planner.addTime')} />
-        <Section label={t('planner.repeatLabel')} />
-        {repeatChips(REM_REPEAT_CHOICES, remRepeat, setRemRepeat)}
-        {remRepeat !== 'daily' && (
-          <label style={{ display: 'block', fontSize: 11, color: 'var(--muted)', textTransform: 'uppercase', letterSpacing: 0.5, margin: '10px 0 4px' }}>
-            {remRepeat === 'once' ? t('planner.onDateLabel') : t('planner.startingLabel')}
-            <input className="field__input" aria-label={remRepeat === 'once' ? t('planner.onDateLabel') : t('planner.startingLabel')} type="date" value={remStart} onChange={e => setRemStart(e.target.value)} style={{ display: 'block', marginTop: 6, width: 180 }} />
-          </label>
-        )}
-        <Field label={t('planner.notesPlaceholder')} value={remNotes} onChange={setRemNotes} placeholder={t('planner.notesPlaceholder')} multiline />
-      </Modal>
 
       <ConfirmDialog
         open={!!deleteAppt}

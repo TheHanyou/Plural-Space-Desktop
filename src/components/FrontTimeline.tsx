@@ -140,7 +140,7 @@ export default function FrontTimeline({ history, members, singlet = false }: {
       </div>
       {rows.length === 0 ? (
         <div style={{ padding: '48px 0', textAlign: 'center' }}>
-          <div style={{ fontSize: 36, opacity: 0.4, marginBottom: 12 }}>◷</div>
+          <div aria-hidden style={{ fontSize: 36, opacity: 0.4, marginBottom: 12 }}>◷</div>
           <div style={{ fontSize: 13, color: 'var(--dim)' }}>
             {singlet ? t('history.noHistorySinglet') : t('history.noHistory')}
           </div>

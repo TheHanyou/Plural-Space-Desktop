@@ -84,6 +84,7 @@
     "retry": "다시 시도"
   },
   "tabs": {
+    "fronters": "프런터",
     "front": "프런트",
     "members": "멤버",
     "journal": "일지",
@@ -194,7 +195,9 @@
     "searchHintKind": "이름을 입력하거나 태그를 선택해 {{kind}}을(를) 찾으세요",
     "active": "활성",
     "archived": "보관됨",
-    "noArchived": "보관된 멤버가 없어요."
+    "noArchived": "보관된 멤버가 없어요.",
+    "noArchivedFacets": "보관된 패싯이 없어요.",
+    "noArchivedCustomFronts": "보관된 커스텀 프런트가 없어요."
   },
   "history": {
     "title": "기록",
@@ -559,6 +562,8 @@
     "emptyFolder": "여기에는 아직 아무것도 없어요."
   },
   "terminology": {
+    "fronter": "프런터",
+    "fronters": "프런터",
     "title": "용어",
     "hint": "앱에서 사용하는 용어를 바꿔 보세요. 입력한 단어가 기본 용어를 어디서나 대체해요. 비워 두면 기본값을 사용해요. 일부 언어에서는 기본형만 대체돼요.",
     "member": "멤버",
@@ -753,6 +758,7 @@
   },
   "systemMap": {
     "showColors": "색상",
+    "lockPositions": "위치 잠금",
     "title": "시스템 지도",
     "connections": "연결",
     "showOnMap": "지도에 표시",
@@ -819,6 +825,7 @@
     "allergies": "알레르기",
     "allergiesPlaceholder": "예: 페니실린",
     "bloodType": "혈액형",
+    "bloodTypePlaceholder": "예: O+",
     "showOnNotification": "앱 알림에 응급 정보 표시",
     "emergencyDesc": "구조대원을 위한 중요 정보예요. 켜면 지속 알림에 추가돼요.",
     "deleteItemMsg": "이 항목을 삭제할까요?",

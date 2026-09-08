@@ -34,7 +34,7 @@ export default function MailboxTile({ onClick }: Props) {
             </div>
             {preview.map(p => (
               <div key={p.name} style={{ fontSize: 12, color: 'var(--muted)', marginTop: 4, display: 'flex', gap: 6 }}>
-                <span>✉</span>
+                <span aria-hidden>✉</span>
                 <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{p.name}</span>
                 <span>{p.count}</span>
               </div>

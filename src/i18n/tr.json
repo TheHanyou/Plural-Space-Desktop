@@ -38,6 +38,8 @@
     "sand": "Kum"
   },
   "terminology": {
+    "fronter": "Frontta Olan",
+    "fronters": "Frontta Olanlar",
     "title": "Terminoloji",
     "hint": "Uygulamanın bu kavramlara verdiği adları değiştir. Senin sözcüğün varsayılanın yerine her yerde geçer. Boş bırakılırsa varsayılan kullanılır. Bazı dillerde yalnızca temel biçimler değiştirilir.",
     "member": "Üye",
@@ -258,6 +260,7 @@
     "retry": "Tekrar dene"
   },
   "tabs": {
+    "fronters": "Frontta Olanlar",
     "front": "Front",
     "members": "Üyeler",
     "journal": "Günlük",
@@ -368,6 +371,8 @@
     "active": "Aktif",
     "archived": "Arşivlenmiş",
     "noArchived": "Arşivlenmiş üye yok.",
+    "noArchivedFacets": "Arşivlenmiş yön yok.",
+    "noArchivedCustomFronts": "Arşivlenmiş özel front yok.",
     "selectedCount": "{{count}} seçili"
   },
   "history": {
@@ -852,6 +857,7 @@
   },
   "systemMap": {
     "showColors": "Renkler",
+    "lockPositions": "Konumları kilitle",
     "manageTypes": "Türleri yönet",
     "connectionsCount": "{{count}} bağlantı",
     "allOnMap": "Tüm üyeler zaten haritada.",
@@ -915,6 +921,7 @@
     "allergies": "Alerjiler",
     "allergiesPlaceholder": "örn. Penisilin",
     "bloodType": "Kan Grubu",
+    "bloodTypePlaceholder": "örn. O+",
     "showOnNotification": "Acil durum bilgilerini uygulama bildiriminde göster",
     "emergencyDesc": "İlk yardım ekipleri için kritik bilgiler. Etkinleştirildiğinde kalıcı bildirime eklenir ve kilit ekranından görülebilir.",
     "deleteItemMsg": "Bu kayıt kaldırılsın mı?",

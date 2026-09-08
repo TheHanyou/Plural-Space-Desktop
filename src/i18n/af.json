@@ -84,6 +84,7 @@
     "retry": "Probeer weer"
   },
   "tabs": {
+    "fronters": "Fronters",
     "front": "Front",
     "members": "Lede",
     "journal": "Joernaal",
@@ -194,7 +195,9 @@
     "searchHintKind": "Tik 'n naam of kies 'n etiket om {{kind}} te vind",
     "active": "Aktief",
     "archived": "Geargiveer",
-    "noArchived": "Geen geargiveerde lede nie."
+    "noArchived": "Geen geargiveerde lede nie.",
+    "noArchivedFacets": "Geen geargiveerde fasette nie.",
+    "noArchivedCustomFronts": "Geen geargiveerde pasgemaakte fronte nie."
   },
   "history": {
     "title": "Geskiedenis",
@@ -559,6 +562,8 @@
     "emptyFolder": "Nog niks hier nie."
   },
   "terminology": {
+    "fronter": "Fronter",
+    "fronters": "Fronters",
     "title": "Terminologie",
     "hint": "Hernoem wat die app hierdie dinge noem. Jou woord vervang die verstek oral. Leeg gebruik die verstek. In sommige tale word slegs basisvorme vervang.",
     "member": "Lid",
@@ -754,6 +759,7 @@
   },
   "systemMap": {
     "showColors": "Kleure",
+    "lockPositions": "Vergrendel posisies",
     "title": "Sisteemkaart",
     "connections": "Verbindings",
     "showOnMap": "Wys op kaart",
@@ -820,6 +826,7 @@
     "allergies": "Allergieë",
     "allergiesPlaceholder": "bv. Penisillien",
     "bloodType": "Bloedgroep",
+    "bloodTypePlaceholder": "bv. O+",
     "showOnNotification": "Wys noodinligting op die app-kennisgewing",
     "emergencyDesc": "Kritieke inligting vir nooddienste. Wanneer dit aan is, word dit by die blywende kennisgewing gevoeg.",
     "deleteItemMsg": "Verwyder hierdie inskrywing?",

@@ -38,6 +38,8 @@
     "sand": "サンド"
   },
   "terminology": {
+    "fronter": "フロンター",
+    "fronters": "フロンター",
     "title": "用語設定",
     "hint": "アプリで使う呼び方を変更できます。入力した語がデフォルトの語をどこでも置き換えます。空欄ならデフォルトを使用します。一部の言語では基本形のみ置き換えられます。",
     "member": "メンバー",
@@ -232,6 +234,7 @@
   },
   "systemMap": {
     "showColors": "カラー",
+    "lockPositions": "位置をロック",
     "manageTypes": "種類を管理",
     "connectionsCount": "{{count}} 件のつながり",
     "allOnMap": "すべてのメンバーはすでにマップ上にあります。",
@@ -298,6 +301,7 @@
     "allergies": "アレルギー",
     "allergiesPlaceholder": "例: ペニシリン",
     "bloodType": "血液型",
+    "bloodTypePlaceholder": "例: O+",
     "showOnNotification": "アプリ通知に緊急情報を表示",
     "emergencyDesc": "救急隊員向けの重要情報です。有効にすると常駐通知に追加されます。",
     "deleteItemMsg": "この記録を削除しますか？",
@@ -351,6 +355,7 @@
     "retry": "再試行"
   },
   "tabs": {
+    "fronters": "フロンター",
     "front": "フロント",
     "members": "メンバー",
     "journal": "ジャーナル",
@@ -460,6 +465,8 @@
     "active": "アクティブ",
     "archived": "アーカイブ済み",
     "noArchived": "アーカイブされたメンバーはいません。",
+    "noArchivedFacets": "アーカイブされた側面はありません。",
+    "noArchivedCustomFronts": "アーカイブされたカスタムフロントはありません。",
     "clone": "複製",
     "cloneFields": "どのフィールドをコピーしますか？"
   },

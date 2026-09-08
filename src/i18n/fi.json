@@ -38,6 +38,8 @@
     "sand": "Hiekka"
   },
   "terminology": {
+    "fronter": "Edessä oleva",
+    "fronters": "Edessä olevat",
     "title": "Terminologia",
     "hint": "Nimeä uudelleen, miksi sovellus kutsuu näitä. Sanasi korvaa oletussanan kaikkialla. Tyhjä käyttää oletusta. Joissakin kielissä vain perusmuodot korvataan.",
     "member": "Jäsen",
@@ -233,6 +235,7 @@
   },
   "systemMap": {
     "showColors": "Värit",
+    "lockPositions": "Lukitse sijainnit",
     "manageTypes": "Hallitse tyyppejä",
     "connectionsCount": "{{count}} yhteyttä",
     "allOnMap": "Kaikki jäsenet ovat jo kartalla.",
@@ -299,6 +302,7 @@
     "allergies": "Allergiat",
     "allergiesPlaceholder": "esim. Penisilliini",
     "bloodType": "Veriryhmä",
+    "bloodTypePlaceholder": "esim. O+",
     "showOnNotification": "Näytä hätätiedot sovelluksen ilmoituksessa",
     "emergencyDesc": "Kriittiset tiedot ensihoitajille. Kun käytössä, ne lisätään pysyvään ilmoitukseen.",
     "deleteItemMsg": "Poistetaanko tämä merkintä?",
@@ -352,6 +356,7 @@
     "retry": "Yritä uudelleen"
   },
   "tabs": {
+    "fronters": "Edessä olevat",
     "front": "Edessä",
     "members": "Jäsenet",
     "journal": "Päiväkirja",
@@ -462,7 +467,9 @@
     "searchHintKind": "Kirjoita nimi tai valitse tunniste: {{kind}}",
     "active": "Aktiivinen",
     "archived": "Arkistoitu",
-    "noArchived": "Ei arkistoituja jäseniä."
+    "noArchived": "Ei arkistoituja jäseniä.",
+    "noArchivedFacets": "Ei arkistoituja puolia.",
+    "noArchivedCustomFronts": "Ei arkistoituja mukautettuja frontteja."
   },
   "history": {
     "title": "Historia",

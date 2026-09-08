@@ -324,17 +324,17 @@ export default function RetroHistoryView({ onUpdate, onDone, singlet = false, se
       {singlet ? (
         <TierMemberPicker tierKey="primary" poolKey="primary" label={t('status.statuses')} color="var(--accent)" selected={primaryIds} setSelected={setPrimaryIds} pool={statusPool} />
       ) : (<>
-        <TierMemberPicker tierKey="primary" poolKey="primary" label={TIER_LABELS.primary} color="var(--accent)" selected={primaryIds} setSelected={setPrimaryIds} pool={regularMembers} />
+        <TierMemberPicker tierKey="primary" poolKey="primary" label={TIER_LABELS.primary} color="var(--accent)" selected={primaryIds} setSelected={setPrimaryIds} pool={regularMembers} searchKind={t('members.title')} />
         <TierMemberPicker tierKey="primary" poolKey="primaryFacet" label={t('members.facets')} color="var(--accent)" selected={primaryIds} setSelected={setPrimaryIds} pool={facetMembers} searchKind={t('members.facets')} />
         {customFronts.length > 0 && (
           <TierMemberPicker tierKey="primary" poolKey="primaryCf" label={t('members.customFronts')} color="var(--accent)" selected={primaryIds} setSelected={setPrimaryIds} pool={customFronts} searchKind={t('members.customFronts')} />
         )}
-        <TierMemberPicker tierKey="coFront" poolKey="coFront" label={TIER_LABELS.coFront} color="var(--info)" selected={coFrontIds} setSelected={setCoFrontIds} pool={regularMembers} />
+        <TierMemberPicker tierKey="coFront" poolKey="coFront" label={TIER_LABELS.coFront} color="var(--info)" selected={coFrontIds} setSelected={setCoFrontIds} pool={regularMembers} searchKind={t('members.title')} />
         <TierMemberPicker tierKey="coFront" poolKey="coFrontFacet" label={t('members.facets')} color="var(--info)" selected={coFrontIds} setSelected={setCoFrontIds} pool={facetMembers} searchKind={t('members.facets')} />
         {customFronts.length > 0 && (
           <TierMemberPicker tierKey="coFront" poolKey="coFrontCf" label={t('members.customFronts')} color="var(--info)" selected={coFrontIds} setSelected={setCoFrontIds} pool={customFronts} searchKind={t('members.customFronts')} />
         )}
-        <TierMemberPicker tierKey="coConscious" poolKey="coConscious" label={TIER_LABELS.coConscious} color="var(--success)" selected={coConIds} setSelected={setCoConIds} pool={regularMembers} />
+        <TierMemberPicker tierKey="coConscious" poolKey="coConscious" label={TIER_LABELS.coConscious} color="var(--success)" selected={coConIds} setSelected={setCoConIds} pool={regularMembers} searchKind={t('members.title')} />
         <TierMemberPicker tierKey="coConscious" poolKey="coConsciousFacet" label={t('members.facets')} color="var(--success)" selected={coConIds} setSelected={setCoConIds} pool={facetMembers} searchKind={t('members.facets')} />
         {customFronts.length > 0 && (
           <TierMemberPicker tierKey="coConscious" poolKey="coConsciousCf" label={t('members.customFronts')} color="var(--success)" selected={coConIds} setSelected={setCoConIds} pool={customFronts} searchKind={t('members.customFronts')} />

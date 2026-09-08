@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { MedicalData, DEFAULT_MEDICAL, formatTime12, fmtTime } from '../utils';
+import { MedicalData, DEFAULT_MEDICAL, fmtClockHHMM, fmtTime } from '../utils';
 import { store, KEYS } from '../storage';
 
 interface Props { onClick: () => void; }
@@ -30,9 +30,9 @@ export default function MedicalTile({ onClick }: Props) {
           <div style={sectionLabel}>{t('medical.medications')}</div>
           {meds.slice(0, 3).map(m => (
             <div key={m.id} style={row}>
-              <span>💊</span>
+              <span aria-hidden>💊</span>
               <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{m.name}</span>
-              {m.times.length > 0 && <span style={{ color: 'var(--muted)', fontSize: 11 }}>{m.times.map(formatTime12).join(', ')}</span>}
+              {m.times.length > 0 && <span style={{ color: 'var(--muted)', fontSize: 11 }}>{m.times.map(fmtClockHHMM).join(', ')}</span>}
             </div>
           ))}
           {meds.length > 3 && <span style={{ fontSize: 11, color: 'var(--muted)' }}>{t('share.more', { count: meds.length - 3 })}</span>}
@@ -42,7 +42,7 @@ export default function MedicalTile({ onClick }: Props) {
           <div style={sectionLabel}>{t('medical.appointments')}</div>
           {upcoming.slice(0, 2).map(a => (
             <div key={a.id} style={row}>
-              <span>📅</span>
+              <span aria-hidden>📅</span>
               <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{a.title}</span>
               <span style={{ color: 'var(--muted)', fontSize: 11 }}>{fmtTime(a.time)}</span>
             </div>
@@ -52,7 +52,7 @@ export default function MedicalTile({ onClick }: Props) {
         {emergencyLine && (<>
           <div style={sectionLabel}>{t('medical.emergency')}</div>
           <div style={{ fontSize: 12, color: 'var(--danger)', display: 'flex', gap: 6 }}>
-            <span>⚠</span><span style={{ flex: 1 }}>{emergencyLine}</span>
+            <span aria-hidden>⚠</span><span style={{ flex: 1 }}>{emergencyLine}</span>
           </div>
         </>)}
       </div>

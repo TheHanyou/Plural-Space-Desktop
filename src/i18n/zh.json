@@ -38,6 +38,8 @@
     "sand": "沙色"
   },
   "terminology": {
+    "fronter": "前台者",
+    "fronters": "前台者",
     "title": "术语设置",
     "hint": "自定义应用中这些概念的叫法。你的用词将在所有位置替换默认用词。留空则使用默认。部分语言仅替换基本形式。",
     "member": "成员",
@@ -232,6 +234,7 @@
   },
   "systemMap": {
     "showColors": "颜色",
+    "lockPositions": "锁定位置",
     "manageTypes": "管理类型",
     "connectionsCount": "{{count}} 条连接",
     "allOnMap": "所有成员都已在地图上。",
@@ -298,6 +301,7 @@
     "allergies": "过敏",
     "allergiesPlaceholder": "如 青霉素",
     "bloodType": "血型",
+    "bloodTypePlaceholder": "如 O+",
     "showOnNotification": "在应用通知中显示紧急信息",
     "emergencyDesc": "供急救人员查看的关键信息。开启后会添加到常驻通知中。",
     "deleteItemMsg": "移除此记录？",
@@ -351,6 +355,7 @@
     "retry": "重试"
   },
   "tabs": {
+    "fronters": "前台者",
     "front": "前台",
     "members": "成员",
     "journal": "日记",
@@ -460,6 +465,8 @@
     "active": "活跃",
     "archived": "已归档",
     "noArchived": "没有已归档的成员。",
+    "noArchivedFacets": "没有已归档的侧面。",
+    "noArchivedCustomFronts": "没有已归档的自定义前台。",
     "clone": "克隆",
     "cloneFields": "复制哪些字段？"
   },

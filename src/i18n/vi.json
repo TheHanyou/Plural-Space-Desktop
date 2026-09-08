@@ -38,6 +38,8 @@
     "sand": "Cát"
   },
   "terminology": {
+    "fronter": "Người front",
+    "fronters": "Người front",
     "title": "Thuật ngữ",
     "hint": "Đổi tên các khái niệm mà ứng dụng sử dụng. Từ của bạn sẽ thay thế từ mặc định ở mọi nơi. Để trống sẽ dùng mặc định. Ở một số ngôn ngữ, chỉ dạng cơ bản được thay thế.",
     "member": "Thành viên",
@@ -257,6 +259,7 @@
     "retry": "Thử lại"
   },
   "tabs": {
+    "fronters": "Người front",
     "front": "Front",
     "members": "Thành viên",
     "journal": "Nhật ký",
@@ -367,6 +370,8 @@
     "active": "Hoạt động",
     "archived": "Đã lưu trữ",
     "noArchived": "Không có thành viên lưu trữ.",
+    "noArchivedFacets": "Không có diện lưu trữ.",
+    "noArchivedCustomFronts": "Không có front tùy chỉnh lưu trữ.",
     "selectedCount": "Đã chọn {{count}}"
   },
   "history": {
@@ -851,6 +856,7 @@
   },
   "systemMap": {
     "showColors": "Màu sắc",
+    "lockPositions": "Khóa vị trí",
     "manageTypes": "Quản lý loại",
     "connectionsCount": "{{count}} kết nối",
     "allOnMap": "Tất cả thành viên đã có trên bản đồ.",
@@ -914,6 +920,7 @@
     "allergies": "Dị ứng",
     "allergiesPlaceholder": "vd. Penicillin",
     "bloodType": "Nhóm máu",
+    "bloodTypePlaceholder": "vd. O+",
     "showOnNotification": "Hiện thông tin khẩn cấp trên thông báo ứng dụng",
     "emergencyDesc": "Thông tin quan trọng cho nhân viên cấp cứu. Khi bật, thông tin được thêm vào thông báo cố định và hiển thị từ màn hình khóa.",
     "deleteItemMsg": "Gỡ mục này?",

@@ -351,7 +351,7 @@ function AppInner() {
             </button>
             <span className="full-view__title">
               {view === 'front' ? (isSinglet ? t('tabs.status') : t('tabs.front'))
-                : view === 'members' ? (isSinglet ? t('tabs.profile') : t('members.title'))
+                : view === 'members' ? (isSinglet ? t('tabs.profile') : t('tabs.fronters'))
                 : view === 'history' ? t('history.title')
                 : view === 'journal' ? t('journal.title')
                 : view === 'chat' ? t('hub.systemChat')

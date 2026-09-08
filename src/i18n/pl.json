@@ -84,6 +84,7 @@
     "retry": "Spróbuj ponownie"
   },
   "tabs": {
+    "fronters": "Frontujący",
     "front": "Front",
     "members": "Członkowie",
     "journal": "Dziennik",
@@ -194,7 +195,9 @@
     "searchHintKind": "Wpisz imię lub wybierz tag, aby znaleźć: {{kind}}",
     "active": "Aktywni",
     "archived": "Zarchiwizowani",
-    "noArchived": "Brak zarchiwizowanych członków."
+    "noArchived": "Brak zarchiwizowanych członków.",
+    "noArchivedFacets": "Brak zarchiwizowanych aspektów.",
+    "noArchivedCustomFronts": "Brak zarchiwizowanych własnych frontów."
   },
   "history": {
     "title": "Historia",
@@ -559,6 +562,8 @@
     "emptyFolder": "Nie ma tu jeszcze nic."
   },
   "terminology": {
+    "fronter": "Frontujący",
+    "fronters": "Frontujący",
     "title": "Terminologia",
     "hint": "Zmień nazwy pojęć używanych w aplikacji. Twoje słowo zastąpi domyślne wszędzie. Puste pole przywraca domyślne. W niektórych językach zastępowane są tylko formy podstawowe.",
     "member": "Członek",
@@ -756,6 +761,7 @@
   },
   "systemMap": {
     "showColors": "Kolory",
+    "lockPositions": "Zablokuj pozycje",
     "title": "Mapa systemu",
     "connections": "Połączenia",
     "showOnMap": "Pokaż na mapie",
@@ -822,6 +828,7 @@
     "allergies": "Alergie",
     "allergiesPlaceholder": "np. penicylina",
     "bloodType": "Grupa krwi",
+    "bloodTypePlaceholder": "np. O+",
     "showOnNotification": "Pokaż informacje ratunkowe w powiadomieniu aplikacji",
     "emergencyDesc": "Kluczowe informacje dla ratowników. Po włączeniu są dodawane do stałego powiadomienia.",
     "deleteItemMsg": "Usunąć ten wpis?",

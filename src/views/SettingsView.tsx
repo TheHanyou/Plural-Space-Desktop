@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Field, Toggle, Dropdown, Section, ChipList, AddRow, Btn, clickable } from '../components/ui';
 import { TextScale, TEXT_SCALE_OPTIONS, isValidHex, normalizeHex } from '../utils';
-import { CustomPalette, BUILTIN_PALETTES, deriveTheme, applyThemeToDOM, applyTextScale, PALETTE, FONT_OPTIONS, FontChoice, applyFontChoice, ensureReadable } from '../theme';
+import { CustomPalette, BUILTIN_PALETTES, deriveTheme, applyThemeToDOM, applyTextScale, PALETTE, FONT_OPTIONS, FontChoice, applyFontChoice, ensureReadable, textFloor } from '../theme';
 import { store, KEYS } from '../storage';
 import { useAppStore } from '../store/appStore';
 import { SUPPORTED_LANGUAGES, changeLanguage } from '../i18n/i18n';
@@ -222,7 +222,7 @@ export default function SettingsView({ onUpdate, onOpenProfile }: Props) {
           {isValidHex(normalizeHex(palBg)) && isValidHex(normalizeHex(palAccent)) && (
             <div style={{ marginTop: 10, padding: 12, borderRadius: 8, background: normalizeHex(palBg), border: '1px solid var(--border)' }}>
               <span style={{ fontSize: 13, color: ensureReadable(normalizeHex(palAccent), normalizeHex(palBg), 3), fontWeight: 600 }}>{t('modal.palPreviewAccent')} </span>
-              <span style={{ fontSize: 13, color: isValidHex(normalizeHex(palText)) ? ensureReadable(normalizeHex(palText), normalizeHex(palBg), 4.5) : normalizeHex(palText) }}>{t('modal.palPreviewText')}</span>
+              <span style={{ fontSize: 13, color: isValidHex(normalizeHex(palText)) ? ensureReadable(normalizeHex(palText), normalizeHex(palBg), textFloor(normalizeHex(palBg))) : normalizeHex(palText) }}>{t('modal.palPreviewText')}</span>
             </div>
           )}
           <div style={{ display: 'flex', gap: 8, marginTop: 10 }}>
@@ -292,7 +292,7 @@ export default function SettingsView({ onUpdate, onOpenProfile }: Props) {
       <Section label={t('terminology.title')} />
       <div style={{ fontSize: 11, color: 'var(--muted)', marginBottom: 8 }}>{t('terminology.hint')}</div>
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 12 }}>
-        {(['member', 'members', 'group', 'groups', 'facet', 'facets', 'front', 'fronting', 'system'] as const).map(term => (
+        {(['member', 'members', 'fronter', 'fronters', 'group', 'groups', 'facet', 'facets', 'front', 'fronting', 'system'] as const).map(term => (
           <Field key={term} label={t(`terminology.${term}`)} value={termMap[term] || ''}
             onChange={v => setTermMap(m => ({ ...m, [term]: v }))} placeholder={t(`terminology.${term}`)} />
         ))}

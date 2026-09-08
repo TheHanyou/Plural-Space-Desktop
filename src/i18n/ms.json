@@ -38,6 +38,8 @@
     "sand": "Pasir"
   },
   "terminology": {
+    "fronter": "Fronter",
+    "fronters": "Fronter",
     "title": "Terminologi",
     "hint": "Namakan semula istilah yang digunakan aplikasi. Perkataan anda menggantikan yang lalai di mana-mana sahaja. Kosong menggunakan lalai. Dalam sesetengah bahasa, hanya bentuk asas diganti.",
     "member": "Ahli",
@@ -257,6 +259,7 @@
     "retry": "Cuba lagi"
   },
   "tabs": {
+    "fronters": "Fronter",
     "front": "Front",
     "members": "Ahli",
     "journal": "Jurnal",
@@ -367,6 +370,8 @@
     "active": "Aktif",
     "archived": "Diarkib",
     "noArchived": "Tiada ahli diarkib.",
+    "noArchivedFacets": "Tiada facet diarkib.",
+    "noArchivedCustomFronts": "Tiada front tersuai diarkib.",
     "selectedCount": "{{count}} dipilih"
   },
   "history": {
@@ -851,6 +856,7 @@
   },
   "systemMap": {
     "showColors": "Warna",
+    "lockPositions": "Kunci kedudukan",
     "manageTypes": "Urus jenis",
     "connectionsCount": "{{count}} sambungan",
     "allOnMap": "Semua ahli sudah berada di peta.",
@@ -914,6 +920,7 @@
     "allergies": "Alahan",
     "allergiesPlaceholder": "cth. Penisilin",
     "bloodType": "Jenis Darah",
+    "bloodTypePlaceholder": "cth. O+",
     "showOnNotification": "Tunjukkan maklumat kecemasan pada pemberitahuan aplikasi",
     "emergencyDesc": "Maklumat kritikal untuk responden kecemasan. Apabila diaktifkan, ia ditambah pada pemberitahuan berterusan dan kelihatan dari skrin kunci.",
     "deleteItemMsg": "Buang catatan ini?",

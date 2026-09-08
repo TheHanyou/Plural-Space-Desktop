@@ -68,7 +68,7 @@ const renderLine = (line: string, i: number, members?: Member[]): React.ReactNod
   if (line.startsWith('# ')) return <p key={i} style={{ ...baseLine, fontSize: 18, fontWeight: 700, marginBottom: 4 }}>{renderInline(line.slice(2), members)}</p>;
   if (line.startsWith('> ')) return <div key={i} style={{ borderLeft: '3px solid var(--accent)', paddingLeft: 10, margin: '2px 0' }}><p style={{ ...baseLine, color: 'var(--dim)', fontStyle: 'italic' }}>{renderInline(line.slice(2), members)}</p></div>;
   if (line.startsWith('---') || line.startsWith('***')) return <hr key={i} style={{ border: 'none', height: 1, background: 'var(--border)', margin: '8px 0' }} />;
-  if (line.match(/^[-*] /)) return <div key={i} style={{ display: 'flex', gap: 6, margin: '1px 0' }}><span style={{ ...baseLine, color: 'var(--dim)' }}>•</span><p style={{ ...baseLine, flex: 1 }}>{renderInline(line.slice(2), members)}</p></div>;
+  if (line.match(/^[-*] /)) return <div key={i} style={{ display: 'flex', gap: 6, margin: '1px 0' }}><span aria-hidden style={{ ...baseLine, color: 'var(--dim)' }}>•</span><p style={{ ...baseLine, flex: 1 }}>{renderInline(line.slice(2), members)}</p></div>;
   if (line.match(/^\d+\. /)) { const m = line.match(/^(\d+)\. (.*)$/); return <div key={i} style={{ display: 'flex', gap: 6, margin: '1px 0' }}><span style={{ ...baseLine, color: 'var(--dim)', width: 16, textAlign: 'right', flexShrink: 0 }}>{m?.[1]}.</span><p style={{ ...baseLine, flex: 1 }}>{renderInline(m?.[2] || '', members)}</p></div>; }
   if (!line.trim()) return <div key={i} style={{ height: 8 }} />;
   return <p key={i} style={baseLine}>{renderInline(line, members)}</p>;
